@@ -1,14 +1,18 @@
+package TaskTypes;
+
+import Annex.TaskStatus;
+
 public class Task {
     protected int id;
     protected String name;
     protected String description;
-    protected String status;
+    protected TaskStatus status;
 
     public Task(int id, String name, String description) {
         this.id = id;
         this.name = name;
         this.description = description;
-        this.status = "NEW";
+        this.status = TaskStatus.NEW;
     }
 
     public int getId() {
@@ -32,11 +36,11 @@ public class Task {
         this.description = description;
     }
 
-    public String getStatus() {
+    public TaskStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(TaskStatus status) {
         this.status = status;
     }
     @Override

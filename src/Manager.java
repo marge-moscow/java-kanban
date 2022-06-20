@@ -1,3 +1,9 @@
+import TaskTypes.Epic;
+import TaskTypes.Subtask;
+import TaskTypes.Task;
+import Annex.TaskStatus;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Manager {
@@ -7,8 +13,7 @@ public class Manager {
     public HashMap<Integer, Subtask> subtasks = new HashMap<>();
 
     public int generateId(){
-        startId = startId + 1;
-        return startId;
+        return ++startId;
     }
 
     // 2.Методы для каждого из типа задач(Задача/Эпик/Подзадача):
@@ -46,14 +51,14 @@ public class Manager {
     }
 
     // 2.3.Получение по идентификатору.
-    public void getTaskById(int id) {
-        System.out.println(tasks.get(id));
+    public Task getTaskById(int id) {
+        return tasks.get(id);
     }
-    public void getEpicById(int id) {
-        System.out.println(epics.get(id));
+    public Epic getEpicById(int id) {
+        return epics.get(id);
     }
-    public void getSubtaskById(int id) {
-        System.out.println(subtasks.get(id));
+    public Subtask getSubtaskById(int id) {
+        return subtasks.get(id);
     }
 
     // 2.4.Создание. Сам объект должен передаваться в качестве параметра.
@@ -74,7 +79,7 @@ public class Manager {
     }
 
     // 2.5. Обновление. Новая версия объекта с верным идентификатором передаётся в виде параметра.
-    public void updateItem(Task task, String status) {
+    public void updateItem(Task task, TaskStatus status) {
         task.setStatus(status);
         tasks.put(task.getId(), task);
     }
@@ -83,7 +88,7 @@ public class Manager {
         epics.put(task.getId(), task);
     }
 
-    public void updateItem(Subtask task, String status) {
+    public void updateItem(Subtask task, TaskStatus status) {
         task.setStatus(status);
         subtasks.put(task.getId(), task);
 
@@ -117,34 +122,34 @@ public class Manager {
 
     // 3. Дополнительные методы:
     // 3.1. Получение списка всех подзадач определённого эпика.
-    public void getSubtasksByEpic(int id) {
-        System.out.println(epics.get(id).getSubtasks());
+    public ArrayList<Subtask> getSubtasksByEpic(int id) {
+        return epics.get(id).getSubtasks();
     }
 
     // 4. Управление статусами:
-    // 4.2. Статус для Epic
+    // 4.2. Статус для TaskTypes.Epic
     private void checkEpicStatus(int id) {
         boolean statusDone = false;
         boolean statusNew = false;
         for (int i = 0; i < epics.get(id).getSubtasks().size(); i++) {
             Subtask item = epics.get(id).getSubtasks().get(i);
             switch (item.getStatus()) {
-                case "IN_PROGRESS":
-                    epics.get(id).setStatus("IN_PROGRESS");
+                case IN_PROGRESS:
+                    epics.get(id).setStatus(TaskStatus.IN_PROGRESS);
                     return;
-                case "NEW":
+                case NEW:
                     statusNew = true;
                     break;
-                case "DONE":
+                case DONE:
                     statusDone = true;
                     break;
             }
         }
 
         if (statusNew  && statusDone) {
-            epics.get(id).setStatus("IN_PROGRESS");
+            epics.get(id).setStatus(TaskStatus.IN_PROGRESS);
         } else if (!statusNew && statusDone) {
-            epics.get(id).setStatus("DONE");
+            epics.get(id).setStatus(TaskStatus.DONE);
         }
     }
 }

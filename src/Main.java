@@ -1,3 +1,8 @@
+import TaskTypes.Epic;
+import TaskTypes.Subtask;
+import TaskTypes.Task;
+import Annex.TaskStatus;
+
 public class Main {
     public static void main(String[] args) {
         Manager manager = new Manager();
@@ -67,7 +72,7 @@ public class Main {
                 "Выкинуть всё, что не надевал в течение 5 лет.",
                 subtask1.getEpicId()
         );
-        manager.updateItem(subtask1, "DONE");
+        manager.updateItem(subtask1, TaskStatus.DONE);
 
 
         System.out.println(task1);
@@ -78,8 +83,8 @@ public class Main {
         System.out.println(subtask2);
         System.out.println(subtask3);
 
-        manager.getSubtasksByEpic(3);
-        manager.getEpicById(3);
+        System.out.println(manager.getSubtasksByEpic(3));
+        System.out.println(manager.getEpicById(6));
         manager.deleteTaskById(2);
         manager.getTasks();
 
