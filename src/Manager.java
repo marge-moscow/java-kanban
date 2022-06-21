@@ -63,15 +63,21 @@ public class Manager {
 
     // 2.4.Создание. Сам объект должен передаваться в качестве параметра.
     public void addItem(Task task) {
-        tasks.put(task.getId(), task);
+        int id = generateId();
+        tasks.put(id, task);
+        task.setId(id);
     }
 
     public void addItem(Epic task) {
-        epics.put(task.getId(), task);
+        int id = generateId();
+        epics.put(id, task);
+        task.setId(id);
     }
 
     public void addItem(Subtask task) {
-        subtasks.put(task.getId(), task);
+        int id = generateId();
+        subtasks.put(id, task);
+        task.setId(id);
 
         int epicId = task.getEpicId();
         Epic epic = epics.get(epicId);
