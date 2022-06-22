@@ -14,6 +14,8 @@ public class Main {
         );
 
         manager.addItem(task1);
+        manager.addItem(task1);
+        manager.addItem(task1);
 
         Task task2 = new Task(
                 0,
@@ -91,8 +93,9 @@ public class Main {
 //        manager.getTasks();
 
       // manager.deleteEpicById(3);
-        manager.getEpics();
-        manager.getSubtasks();
+       // manager.getEpics();
+      //  manager.getSubtasks();
+        manager.getTasks();
 
 
 
