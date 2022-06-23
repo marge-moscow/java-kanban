@@ -1,4 +1,4 @@
-package TaskTypes;
+package taskTypes;
 
 import java.util.ArrayList;
 

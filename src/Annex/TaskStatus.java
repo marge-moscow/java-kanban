@@ -1,4 +1,4 @@
-package Annex;
+package annex;
 
 public enum TaskStatus {
     NEW,

@@ -1,6 +1,6 @@
-package TaskTypes;
+package taskTypes;
 
-import Annex.TaskStatus;
+import annex.TaskStatus;
 
 public class Task {
     protected int id;

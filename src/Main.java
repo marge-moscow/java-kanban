@@ -1,11 +1,14 @@
-import TaskTypes.Epic;
-import TaskTypes.Subtask;
-import TaskTypes.Task;
-import Annex.TaskStatus;
+import managers.Managers;
+import managers.TaskManger;
+import taskTypes.Epic;
+import taskTypes.Subtask;
+import taskTypes.Task;
+import annex.TaskStatus;
 
 public class Main {
     public static void main(String[] args) {
-        Manager manager = new Manager();
+
+        TaskManger taskManager = Managers.getDefault();
 
         Task task1 = new Task(
                 0,
@@ -13,9 +16,10 @@ public class Main {
                 "Корм для рыб Зоомир Гурман-3 30г."
         );
 
-        manager.addItem(task1);
-        manager.addItem(task1);
-        manager.addItem(task1);
+        taskManager.addItem(task1);
+        taskManager.addItem(task1);
+        taskManager.addItem(task1);
+        taskManager.addItem(task1);
 
         Task task2 = new Task(
                 0,
@@ -23,7 +27,7 @@ public class Main {
                 "Телефон компании +74955634788. Директор - Пётр Анатольевич."
         );
 
-        manager.addItem(task2);
+        taskManager.addItem(task2);
 
         Epic epic1 = new Epic(
                 0,
@@ -31,7 +35,8 @@ public class Main {
                 "Разобрать все вещи и организовать систему хранения."
         );
 
-        manager.addItem(epic1);
+        taskManager.addItem(epic1);
+        taskManager.addItem((Task)epic1);
 
 
         Subtask subtask1 = new Subtask(
@@ -41,7 +46,7 @@ public class Main {
                 epic1.getId()
         );
 
-        manager.addItem(subtask1);
+        taskManager.addItem(subtask1);
 
         Subtask subtask2 = new Subtask(
                 0,
@@ -50,7 +55,7 @@ public class Main {
                 epic1.getId()
         );
 
-        manager.addItem(subtask2);
+        taskManager.addItem(subtask2);
 
         Epic epic2 = new Epic(
                 0,
@@ -58,7 +63,7 @@ public class Main {
                 "Отгрузка запланирована на 12:00. До этого времени необходимо подготовить документы."
         );
 
-        manager.addItem(epic2);
+        taskManager.addItem(epic2);
 
         Subtask subtask3 = new Subtask(
                 0,
@@ -67,7 +72,7 @@ public class Main {
                 epic2.getId()
         );
 
-        manager.addItem(subtask3);
+        taskManager.addItem(subtask3);
 
         subtask1 = new Subtask(
                 subtask1.getId(),
@@ -75,7 +80,7 @@ public class Main {
                 "Выкинуть всё, что не надевал в течение 5 лет.",
                 epic1.getId());
 
-        manager.updateItem(subtask1, TaskStatus.DONE);
+        taskManager.updateItem(subtask1, TaskStatus.DONE);
 
 
 //        System.out.println(task1);
@@ -93,9 +98,29 @@ public class Main {
 //        manager.getTasks();
 
       // manager.deleteEpicById(3);
-       // manager.getEpics();
-      //  manager.getSubtasks();
-        manager.getTasks();
+        //taskManager.getEpics();
+       // taskManager.getSubtasks();
+
+        //taskManager.getTasks();
+
+        System.out.println(taskManager.getTaskById(1));
+        //taskManager.getHistory();
+        taskManager.getTaskById(2);
+        //taskManager.getHistory();
+        taskManager.getEpicById(3);
+        //taskManager.getHistory();
+        taskManager.getSubtaskById(4);
+
+        taskManager.getSubtaskById(5);
+        taskManager.getEpicById(6);
+
+        taskManager.getSubtaskById(7);
+        taskManager.getTaskById(1);
+        taskManager.getSubtaskById(4);
+        taskManager.getEpicById(6);
+        taskManager.getEpicById(3);
+        taskManager.getSubtaskById(7);
+        taskManager.getHistory();
 
 
 

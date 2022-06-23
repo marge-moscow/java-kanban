@@ -1,35 +1,46 @@
-import TaskTypes.Epic;
-import TaskTypes.Subtask;
-import TaskTypes.Task;
-import Annex.TaskStatus;
+package managers;
+
+import taskTypes.Epic;
+import taskTypes.Subtask;
+import taskTypes.Task;
+import annex.TaskStatus;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Manager {
+public class InMemoryTaskManager implements TaskManger {
+    HistoryManager historyManager = Managers.getDefaultHistory();
+
     int startId;
     public HashMap<Integer, Task> tasks = new HashMap<>();
     public HashMap<Integer, Epic> epics = new HashMap<>();
     public HashMap<Integer, Subtask> subtasks = new HashMap<>();
 
+
+    @Override
     public int generateId(){
         return ++startId;
     }
 
     // 2.Методы для каждого из типа задач(Задача/Эпик/Подзадача):
     // 2.1.Получение списка всех задач.
+
+    @Override
     public void getTasks() {
         for(Task task: tasks.values()){
             System.out.println(task);
         }
     }
 
+    @Override
     public void getEpics() {
         for(Epic task: epics.values()){
             System.out.println(task);
         }
     }
 
+    @Override
     public void getSubtasks() {
         for(Subtask task: subtasks.values()){
             System.out.println(task);
@@ -37,32 +48,42 @@ public class Manager {
     }
 
     // 2.2.Удаление всех задач.
+    @Override
     public void deleteTasks() {
         tasks.clear();
     }
 
+    @Override
     public void deleteEpics() {
         epics.clear();
         subtasks.clear();
     }
 
+    @Override
     public void deleteSubtasks() {
         subtasks.clear();
     }
 
     // 2.3.Получение по идентификатору.
+    @Override
     public Task getTaskById(int id) {
+        historyManager.add(tasks.get(id));
         return tasks.get(id);
     }
+    @Override
     public Epic getEpicById(int id) {
+        historyManager.add(epics.get(id));
         return epics.get(id);
     }
+    @Override
     public Subtask getSubtaskById(int id) {
+        historyManager.add(subtasks.get(id));
         return subtasks.get(id);
     }
 
     // 2.4.Создание. Сам объект должен передаваться в качестве параметра.
-    public void addItem(Task task) {
+    @Override
+    public void addItem(@NotNull Task task) {
         if(task.getId() <= 0) {
             int id = generateId();
             tasks.put(id, task);
@@ -72,7 +93,8 @@ public class Manager {
         }
     }
 
-    public void addItem(Epic task) {
+    @Override
+    public void addItem(@NotNull Epic task) {
         if(task.getId() <= 0) {
             int id = generateId();
             epics.put(id, task);
@@ -81,8 +103,8 @@ public class Manager {
             updateItem(task);
         }
     }
-
-    public void addItem(Subtask task) {
+    @Override
+    public void addItem(@NotNull Subtask task) {
         if(task.getId() <= 0) {
             int id = generateId();
             subtasks.put(id, task);
@@ -98,16 +120,19 @@ public class Manager {
     }
 
     // 2.5. Обновление. Новая версия объекта с верным идентификатором передаётся в виде параметра.
-    public void updateItem(Task task, TaskStatus status) {
+    @Override
+    public void updateItem(@NotNull Task task, TaskStatus status) {
         task.setStatus(status);
         tasks.put(task.getId(), task);
     }
 
+    @Override
     public void updateItem(Epic task) {
         epics.put(task.getId(), task);
     }
 
-    public void updateItem(Subtask task, TaskStatus status) {
+    @Override
+    public void updateItem(@NotNull Subtask task, TaskStatus status) {
         task.setStatus(status);
         subtasks.put(task.getId(), task);
 
@@ -122,10 +147,12 @@ public class Manager {
     }
 
     // 2.6. Удаление по идентификатору.
+    @Override
     public void deleteTaskById(int id) {
         tasks.remove(id);
     }
 
+    @Override
     public void deleteEpicById(int id) {
         Epic epic = epics.get(id);
         epics.remove(id);
@@ -135,12 +162,14 @@ public class Manager {
         }
     }
 
+    @Override
     public void deleteSubtaskById(int id) {
         subtasks.remove(id);
     }
 
     // 3. Дополнительные методы:
     // 3.1. Получение списка всех подзадач определённого эпика.
+    @Override
     public ArrayList<Subtask> getSubtasksByEpic(int id) {
         return epics.get(id).getSubtasks();
     }
@@ -171,4 +200,10 @@ public class Manager {
             epics.get(id).setStatus(TaskStatus.DONE);
         }
     }
+
+    @Override
+    public void getHistory(){
+        historyManager.getHistory();
+    }
+
 }
