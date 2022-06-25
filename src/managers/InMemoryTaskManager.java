@@ -1,8 +1,8 @@
 package managers;
 
-import taskTypes.Epic;
-import taskTypes.Subtask;
-import taskTypes.Task;
+import tasktypes.Epic;
+import tasktypes.Subtask;
+import tasktypes.Task;
 import annex.TaskStatus;
 import org.jetbrains.annotations.NotNull;
 

@@ -1,9 +1,9 @@
 package managers;
 
 import annex.TaskStatus;
-import taskTypes.Epic;
-import taskTypes.Subtask;
-import taskTypes.Task;
+import tasktypes.Epic;
+import tasktypes.Subtask;
+import tasktypes.Task;
 
 import java.util.ArrayList;
 

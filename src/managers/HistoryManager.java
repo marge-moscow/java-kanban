@@ -1,6 +1,6 @@
 package managers;
 
-import taskTypes.Task;
+import tasktypes.Task;
 
 public interface HistoryManager {
 

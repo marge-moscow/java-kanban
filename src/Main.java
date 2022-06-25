@@ -1,8 +1,8 @@
 import managers.Managers;
 import managers.TaskManger;
-import taskTypes.Epic;
-import taskTypes.Subtask;
-import taskTypes.Task;
+import tasktypes.Epic;
+import tasktypes.Subtask;
+import tasktypes.Task;
 import annex.TaskStatus;
 
 public class Main {
