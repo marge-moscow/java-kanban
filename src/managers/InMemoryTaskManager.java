@@ -4,7 +4,6 @@ import tasktypes.Epic;
 import tasktypes.Subtask;
 import tasktypes.Task;
 import annex.TaskStatus;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -67,23 +66,32 @@ public class InMemoryTaskManager implements TaskManger {
     // 2.3.Получение по идентификатору.
     @Override
     public Task getTaskById(int id) {
+       if (tasks.get(id) == null) {
+           return null;
+       }
         historyManager.add(tasks.get(id));
         return tasks.get(id);
     }
     @Override
     public Epic getEpicById(int id) {
+        if (epics.get(id) == null) {
+            return null;
+        }
         historyManager.add(epics.get(id));
         return epics.get(id);
     }
     @Override
     public Subtask getSubtaskById(int id) {
+        if (subtasks.get(id) == null) {
+            return null;
+        }
         historyManager.add(subtasks.get(id));
         return subtasks.get(id);
     }
 
     // 2.4.Создание. Сам объект должен передаваться в качестве параметра.
     @Override
-    public void addItem(@NotNull Task task) {
+    public void addItem(Task task) {
         if(task.getId() <= 0) {
             int id = generateId();
             tasks.put(id, task);
@@ -94,7 +102,7 @@ public class InMemoryTaskManager implements TaskManger {
     }
 
     @Override
-    public void addItem(@NotNull Epic task) {
+    public void addItem(Epic task) {
         if(task.getId() <= 0) {
             int id = generateId();
             epics.put(id, task);
@@ -104,7 +112,7 @@ public class InMemoryTaskManager implements TaskManger {
         }
     }
     @Override
-    public void addItem(@NotNull Subtask task) {
+    public void addItem(Subtask task) {
         if(task.getId() <= 0) {
             int id = generateId();
             subtasks.put(id, task);
@@ -121,7 +129,7 @@ public class InMemoryTaskManager implements TaskManger {
 
     // 2.5. Обновление. Новая версия объекта с верным идентификатором передаётся в виде параметра.
     @Override
-    public void updateItem(@NotNull Task task, TaskStatus status) {
+    public void updateItem(Task task, TaskStatus status) {
         task.setStatus(status);
         tasks.put(task.getId(), task);
     }
@@ -132,7 +140,7 @@ public class InMemoryTaskManager implements TaskManger {
     }
 
     @Override
-    public void updateItem(@NotNull Subtask task, TaskStatus status) {
+    public void updateItem(Subtask task, TaskStatus status) {
         task.setStatus(status);
         subtasks.put(task.getId(), task);
 
@@ -149,11 +157,17 @@ public class InMemoryTaskManager implements TaskManger {
     // 2.6. Удаление по идентификатору.
     @Override
     public void deleteTaskById(int id) {
+        if (tasks.get(id) == null) {
+            return;
+        }
         tasks.remove(id);
     }
 
     @Override
     public void deleteEpicById(int id) {
+        if (epics.get(id) == null) {
+            return;
+        }
         Epic epic = epics.get(id);
         epics.remove(id);
 
@@ -164,6 +178,9 @@ public class InMemoryTaskManager implements TaskManger {
 
     @Override
     public void deleteSubtaskById(int id) {
+        if (subtasks.get(id) == null) {
+            return;
+        }
         subtasks.remove(id);
     }
 
@@ -171,6 +188,9 @@ public class InMemoryTaskManager implements TaskManger {
     // 3.1. Получение списка всех подзадач определённого эпика.
     @Override
     public ArrayList<Subtask> getSubtasksByEpic(int id) {
+        if (epics.get(id) == null) {
+            return null;
+        }
         return epics.get(id).getSubtasks();
     }
 
@@ -205,5 +225,7 @@ public class InMemoryTaskManager implements TaskManger {
     public void getHistory(){
         historyManager.getHistory();
     }
+
+
 
 }
