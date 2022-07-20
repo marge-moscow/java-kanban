@@ -6,6 +6,7 @@ import tasktypes.Subtask;
 import tasktypes.Task;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 public interface TaskManger {
@@ -57,6 +58,7 @@ public interface TaskManger {
     // 3.1. Получение списка всех подзадач определённого эпика.
     ArrayList<Subtask> getSubtasksByEpic(int id);
 
-    void getHistory();
+    List<String> getHistory();
+
 
 }

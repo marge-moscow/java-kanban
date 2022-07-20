@@ -7,9 +7,10 @@ import annex.TaskStatus;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class InMemoryTaskManager implements TaskManger {
-    HistoryManager historyManager = Managers.getDefaultHistory();
+    InMemoryHistoryManager historyManager = new InMemoryHistoryManager();
 
     int startId;
     public HashMap<Integer, Task> tasks = new HashMap<>();
@@ -144,6 +145,9 @@ public class InMemoryTaskManager implements TaskManger {
         task.setStatus(status);
         subtasks.put(task.getId(), task);
 
+        /*if (task.getEpicId() < 0){
+
+        }*/
         for (int i = 0; i < epics.get(task.getEpicId()).getSubtasks().size(); i++){
             Subtask item = epics.get(task.getEpicId()).getSubtasks().get(i);
             if(task.getId() == item.getId()){
@@ -161,6 +165,8 @@ public class InMemoryTaskManager implements TaskManger {
             return;
         }
         tasks.remove(id);
+        historyManager.remove(id);
+
     }
 
     @Override
@@ -170,9 +176,11 @@ public class InMemoryTaskManager implements TaskManger {
         }
         Epic epic = epics.get(id);
         epics.remove(id);
+        historyManager.remove(id);
 
         for (Subtask item: epic.getSubtasks()) {
             subtasks.remove(item.getId());
+            historyManager.remove(item.getId());
         }
     }
 
@@ -181,7 +189,9 @@ public class InMemoryTaskManager implements TaskManger {
         if (subtasks.get(id) == null) {
             return;
         }
+        epics.get(subtasks.get(id).getEpicId()).deleteSubtask(subtasks.get(id));
         subtasks.remove(id);
+        historyManager.remove(id);
     }
 
     // 3. Дополнительные методы:
@@ -221,11 +231,16 @@ public class InMemoryTaskManager implements TaskManger {
         }
     }
 
+
     @Override
-    public void getHistory(){
-        historyManager.getHistory();
+    public List<String> getHistory(){
+        List<String> prettyPrintHistoryList = new ArrayList<>();
+        for (Task task: historyManager.getHistory()) {
+            String text;
+            text = "\n"+ task.getId() + ". " + task.getName();
+            prettyPrintHistoryList.add(text);
+        }
+        return prettyPrintHistoryList;
     }
-
-
 
 }
