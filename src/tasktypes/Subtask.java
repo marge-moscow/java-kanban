@@ -14,6 +14,6 @@ public class Subtask extends Task {
 
     @Override
     public String toString() {
-        return "\n" + id + "." + name + " Описание: " + description + " Статус: " + status + ". Номер эпика: " + epicId;
+        return "\n" + super.toString() + ". Номер эпика: " + epicId;
     }
 }

@@ -6,7 +6,6 @@ import tasktypes.Task;
 import java.util.*;
 
 public class InMemoryHistoryManager implements HistoryManager{
-    //protected List<Task> taskHistory = new ArrayList<>();
     Map<Integer, Node> nodeMap = new HashMap<>();
 
     private Node <Task> head;

@@ -83,8 +83,7 @@ public class Main {
         taskManager.updateItem(subtask1, TaskStatus.DONE);
 
 
-
-        taskManager.getTaskById(1);
+        /*taskManager.getTaskById(1);
         taskManager.getTaskById(2);
         taskManager.getSubtaskById(7);
         taskManager.getEpicById(3);
@@ -106,8 +105,10 @@ public class Main {
         System.out.println(epic1);
 
         taskManager.deleteEpicById(3);
-        System.out.println(taskManager.getHistory());
+        System.out.println(taskManager.getHistory());*/
 
+        taskManager.getSubtaskById(4);
+        System.out.println(taskManager.getHistory());
 
 
 

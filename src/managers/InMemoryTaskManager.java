@@ -8,6 +8,8 @@ import annex.TaskStatus;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.lang.Object;
+import java.util.Map;
 
 public class InMemoryTaskManager implements TaskManger {
     InMemoryHistoryManager historyManager = new InMemoryHistoryManager();
@@ -28,21 +30,21 @@ public class InMemoryTaskManager implements TaskManger {
 
     @Override
     public void getTasks() {
-        for(Task task: tasks.values()){
-            System.out.println(task);
-        }
+        printTask(tasks);
     }
 
     @Override
     public void getEpics() {
-        for(Epic task: epics.values()){
-            System.out.println(task);
-        }
+        printTask(epics);
     }
 
     @Override
     public void getSubtasks() {
-        for(Subtask task: subtasks.values()){
+        printTask(subtasks);
+    }
+
+    private <T> void printTask (HashMap <Integer, T> list){
+        for(Object task: list.values()) {
             System.out.println(task);
         }
     }
@@ -65,38 +67,35 @@ public class InMemoryTaskManager implements TaskManger {
     }
 
     // 2.3.Получение по идентификатору.
+
     @Override
-    public Task getTaskById(int id) {
-       if (tasks.get(id) == null) {
-           return null;
-       }
-        historyManager.add(tasks.get(id));
-        return tasks.get(id);
+    public void getTaskById(int id) {
+        getById(tasks, id);
     }
     @Override
-    public Epic getEpicById(int id) {
-        if (epics.get(id) == null) {
-            return null;
-        }
-        historyManager.add(epics.get(id));
-        return epics.get(id);
+    public void getEpicById(int id) {
+        getById(epics, id);
     }
     @Override
-    public Subtask getSubtaskById(int id) {
-        if (subtasks.get(id) == null) {
+    public void getSubtaskById(int id) {
+        getById(subtasks, id);
+    }
+
+    private <T> T getById (HashMap <Integer, T> list, int id){
+        T element = list.get(id);
+        if (element == null) {
             return null;
         }
-        historyManager.add(subtasks.get(id));
-        return subtasks.get(id);
+        historyManager.add((Task) element);
+        return element;
     }
 
     // 2.4.Создание. Сам объект должен передаваться в качестве параметра.
     @Override
     public void addItem(Task task) {
         if(task.getId() <= 0) {
-            int id = generateId();
+            int id = setStartId(task);
             tasks.put(id, task);
-            task.setId(id);
         } else {
             updateItem(task, task.getStatus());
         }
@@ -105,9 +104,8 @@ public class InMemoryTaskManager implements TaskManger {
     @Override
     public void addItem(Epic task) {
         if(task.getId() <= 0) {
-            int id = generateId();
+            int id = setStartId(task);
             epics.put(id, task);
-            task.setId(id);
         } else {
             updateItem(task);
         }
@@ -115,9 +113,8 @@ public class InMemoryTaskManager implements TaskManger {
     @Override
     public void addItem(Subtask task) {
         if(task.getId() <= 0) {
-            int id = generateId();
+            int id = setStartId(task);
             subtasks.put(id, task);
-            task.setId(id);
 
             int epicId = task.getEpicId();
             Epic epic = epics.get(epicId);
@@ -127,6 +124,14 @@ public class InMemoryTaskManager implements TaskManger {
             updateItem(task, task.getStatus());
         }
     }
+
+    private int setStartId(Task element){
+        int id = generateId();
+        element.setId(id);
+        return id;
+    }
+
+
 
     // 2.5. Обновление. Новая версия объекта с верным идентификатором передаётся в виде параметра.
     @Override
@@ -145,9 +150,6 @@ public class InMemoryTaskManager implements TaskManger {
         task.setStatus(status);
         subtasks.put(task.getId(), task);
 
-        /*if (task.getEpicId() < 0){
-
-        }*/
         for (int i = 0; i < epics.get(task.getEpicId()).getSubtasks().size(); i++){
             Subtask item = epics.get(task.getEpicId()).getSubtasks().get(i);
             if(task.getId() == item.getId()){
@@ -233,6 +235,11 @@ public class InMemoryTaskManager implements TaskManger {
 
 
     @Override
+            //Я специально создала метод getHistory, чтобы не печатать всю информацию из toString для истории.
+            //То есть если вызывать getTaskById(), то идет полная информация с помощью toString.
+            //А в истории только id и название.
+            //Но если важно убрать, уберу.
+
     public List<String> getHistory(){
         List<String> prettyPrintHistoryList = new ArrayList<>();
         for (Task task: historyManager.getHistory()) {

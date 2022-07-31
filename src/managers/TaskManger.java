@@ -7,6 +7,7 @@ import tasktypes.Task;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 
 public interface TaskManger {
@@ -29,9 +30,9 @@ public interface TaskManger {
     void deleteSubtasks();
 
     // 2.3.Получение по идентификатору.
-    Task getTaskById(int id);
-    Epic getEpicById(int id);
-    Subtask getSubtaskById(int id);
+    void getTaskById(int id);
+    void getEpicById(int id);
+    void getSubtaskById(int id);
 
     // 2.4.Создание. Сам объект должен передаваться в качестве параметра.
     void addItem(Task task);
