@@ -5,11 +5,7 @@ import tasktypes.Subtask;
 import tasktypes.Task;
 import annex.TaskStatus;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.lang.Object;
-import java.util.Map;
+import java.util.*;
 
 public class InMemoryTaskManager implements TaskManger {
     InMemoryHistoryManager historyManager = new InMemoryHistoryManager();
@@ -43,8 +39,8 @@ public class InMemoryTaskManager implements TaskManger {
         printTask(subtasks);
     }
 
-    private <T> void printTask (HashMap <Integer, T> list){
-        for(Object task: list.values()) {
+    private void printTask (HashMap <Integer, ? extends Task> list){
+        for(Task task: list.values()) {
             System.out.println(task);
         }
     }
@@ -52,18 +48,25 @@ public class InMemoryTaskManager implements TaskManger {
     // 2.2.Удаление всех задач.
     @Override
     public void deleteTasks() {
-        tasks.clear();
+        deleteTaskHistory(tasks);
     }
 
     @Override
     public void deleteEpics() {
-        epics.clear();
-        subtasks.clear();
+        deleteTaskHistory(epics);
+        deleteTaskHistory(subtasks);
     }
 
     @Override
     public void deleteSubtasks() {
-        subtasks.clear();
+        deleteTaskHistory(subtasks);
+    }
+
+    private void deleteTaskHistory(HashMap <Integer, ? extends Task> list){
+        for(int id: list.keySet()){
+            historyManager.remove(id);
+        }
+        list.clear();
     }
 
     // 2.3.Получение по идентификатору.
@@ -81,13 +84,13 @@ public class InMemoryTaskManager implements TaskManger {
         getById(subtasks, id);
     }
 
-    private <T> T getById (HashMap <Integer, T> list, int id){
-        T element = list.get(id);
-        if (element == null) {
-            return null;
+    private Task getById (HashMap <Integer, ? extends Task> list, int id){
+        Task task = list.get(id);
+        if (task == null) {
+            return (Task) Collections.EMPTY_LIST;
         }
-        historyManager.add((Task) element);
-        return element;
+        historyManager.add(task);
+        return task;
     }
 
     // 2.4.Создание. Сам объект должен передаваться в качестве параметра.
@@ -199,9 +202,9 @@ public class InMemoryTaskManager implements TaskManger {
     // 3. Дополнительные методы:
     // 3.1. Получение списка всех подзадач определённого эпика.
     @Override
-    public ArrayList<Subtask> getSubtasksByEpic(int id) {
+    public List<Subtask> getSubtasksByEpic(int id) {
         if (epics.get(id) == null) {
-            return null;
+            return Collections.EMPTY_LIST;
         }
         return epics.get(id).getSubtasks();
     }
