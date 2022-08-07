@@ -1,11 +1,12 @@
-package managers;
+package managers.memoryManager;
 
 import annex.Node;
+import managers.HistoryManager;
 import tasktypes.Task;
 
 import java.util.*;
 
-public class InMemoryHistoryManager implements HistoryManager{
+public class InMemoryHistoryManager implements HistoryManager {
     Map<Integer, Node> nodeMap = new HashMap<>();
 
     private Node <Task> head;

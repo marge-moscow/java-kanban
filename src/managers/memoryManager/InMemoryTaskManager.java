@@ -1,5 +1,6 @@
-package managers;
+package managers.memoryManager;
 
+import managers.TaskManger;
 import tasktypes.Epic;
 import tasktypes.Subtask;
 import tasktypes.Task;
@@ -8,9 +9,9 @@ import annex.TaskStatus;
 import java.util.*;
 
 public class InMemoryTaskManager implements TaskManger {
-    InMemoryHistoryManager historyManager = new InMemoryHistoryManager();
+    protected InMemoryHistoryManager historyManager = new InMemoryHistoryManager();
 
-    int startId;
+    protected int startId;
     public HashMap<Integer, Task> tasks = new HashMap<>();
     public HashMap<Integer, Epic> epics = new HashMap<>();
     public HashMap<Integer, Subtask> subtasks = new HashMap<>();
@@ -42,6 +43,7 @@ public class InMemoryTaskManager implements TaskManger {
     private void printTask (HashMap <Integer, ? extends Task> list){
         for(Task task: list.values()) {
             System.out.println(task);
+            historyManager.add(task);
         }
     }
 
@@ -72,16 +74,16 @@ public class InMemoryTaskManager implements TaskManger {
     // 2.3.Получение по идентификатору.
 
     @Override
-    public void getTaskById(int id) {
-        getById(tasks, id);
+    public Task getTaskById(int id) {
+        return getById(tasks, id);
     }
     @Override
-    public void getEpicById(int id) {
-        getById(epics, id);
+    public Task getEpicById(int id) {
+        return getById(epics, id);
     }
     @Override
-    public void getSubtaskById(int id) {
-        getById(subtasks, id);
+    public Task getSubtaskById(int id) {
+        return getById(subtasks, id);
     }
 
     private Task getById (HashMap <Integer, ? extends Task> list, int id){
@@ -97,70 +99,57 @@ public class InMemoryTaskManager implements TaskManger {
     @Override
     public void addItem(Task task) {
         if(task.getId() <= 0) {
-            int id = setStartId(task);
-            tasks.put(id, task);
+            int id = generateId();
+            task.setId(id);
+            switch (task.getType()) {
+                case TASK:
+                    tasks.put(id, task);
+                    break;
+                case EPIC:
+                    epics.put(id, (Epic) task);
+                    break;
+                case SUBTASK:
+                    subtasks.put(id, (Subtask) task);
+                    Subtask subtask = (Subtask) task;
+                    int epicId = subtask.getEpicId();
+                    Epic epic = epics.get(epicId);
+                    epic.addSubtask((Subtask) task);
+                    break;
+                default:
+                    System.out.println("Добавьте тип задачи.");
+            }
         } else {
             updateItem(task, task.getStatus());
         }
     }
-
-    @Override
-    public void addItem(Epic task) {
-        if(task.getId() <= 0) {
-            int id = setStartId(task);
-            epics.put(id, task);
-        } else {
-            updateItem(task);
-        }
-    }
-    @Override
-    public void addItem(Subtask task) {
-        if(task.getId() <= 0) {
-            int id = setStartId(task);
-            subtasks.put(id, task);
-
-            int epicId = task.getEpicId();
-            Epic epic = epics.get(epicId);
-            epic.addSubtask(task);
-
-        } else {
-            updateItem(task, task.getStatus());
-        }
-    }
-
-    private int setStartId(Task element){
-        int id = generateId();
-        element.setId(id);
-        return id;
-    }
-
 
 
     // 2.5. Обновление. Новая версия объекта с верным идентификатором передаётся в виде параметра.
     @Override
     public void updateItem(Task task, TaskStatus status) {
         task.setStatus(status);
-        tasks.put(task.getId(), task);
-    }
-
-    @Override
-    public void updateItem(Epic task) {
-        epics.put(task.getId(), task);
-    }
-
-    @Override
-    public void updateItem(Subtask task, TaskStatus status) {
-        task.setStatus(status);
-        subtasks.put(task.getId(), task);
-
-        for (int i = 0; i < epics.get(task.getEpicId()).getSubtasks().size(); i++){
-            Subtask item = epics.get(task.getEpicId()).getSubtasks().get(i);
-            if(task.getId() == item.getId()){
-                epics.get(task.getEpicId()).getSubtasks().set(i, task);
-            }
+        switch (task.getType()) {
+            case TASK:
+                tasks.put(task.getId(), task);
+                break;
+            case EPIC:
+                epics.put(task.getId(), (Epic) task);
+                break;
+            case SUBTASK:
+                subtasks.put(task.getId(), (Subtask) task);
+                Subtask subtask = (Subtask) task;
+                for (int i = 0; i < epics.get(subtask.getEpicId()).getSubtasks().size(); i++){
+                    Subtask item = epics.get(subtask.getEpicId()).getSubtasks().get(i);
+                    if(task.getId() == item.getId()){
+                        epics.get(subtask.getEpicId()).getSubtasks().set(i, subtask);
+                    }
+                }
+                checkEpicStatus(subtask.getEpicId());
+                break;
+            default:
+                System.out.println("Добавьте тип задачи.");
         }
 
-        checkEpicStatus(task.getEpicId());
     }
 
     // 2.6. Удаление по идентификатору.
@@ -238,10 +227,7 @@ public class InMemoryTaskManager implements TaskManger {
 
 
     @Override
-            //Я специально создала метод getHistory, чтобы не печатать всю информацию из toString для истории.
-            //То есть если вызывать getTaskById(), то идет полная информация с помощью toString.
-            //А в истории только id и название.
-            //Но если важно убрать, уберу.
+            //Специально созданный метод для красивого вывода истории (бед детальной информации)
 
     public List<String> getHistory(){
         List<String> prettyPrintHistoryList = new ArrayList<>();

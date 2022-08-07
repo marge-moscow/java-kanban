@@ -1,3 +1,4 @@
+/*import annex.TaskType;
 import managers.Managers;
 import managers.TaskManger;
 import tasktypes.Epic;
@@ -6,14 +7,15 @@ import tasktypes.Task;
 import annex.TaskStatus;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) {*/
 
-        TaskManger taskManager = Managers.getDefault();
+        /*TaskManger taskManager = Managers.getDefault();
 
         Task task1 = new Task(
                 0,
                 "Купить корм для рыбок.",
-                "Корм для рыб Зоомир Гурман-3 30г."
+                "Корм для рыб Зоомир Гурман-3 30г.",
+                TaskType.TASK
         );
 
         taskManager.addItem(task1);
@@ -24,7 +26,8 @@ public class Main {
         Task task2 = new Task(
                 0,
                 "Договориться с директором 'Астры' о встрече.",
-                "Телефон компании +74955634788. Директор - Пётр Анатольевич."
+                "Телефон компании +74955634788. Директор - Пётр Анатольевич.",
+                TaskType.TASK
         );
 
         taskManager.addItem(task2);
@@ -32,7 +35,8 @@ public class Main {
         Epic epic1 = new Epic(
                 0,
                 "Навести порядок в кладовке.",
-                "Разобрать все вещи и организовать систему хранения."
+                "Разобрать все вещи и организовать систему хранения.",
+                TaskType.EPIC
         );
 
         taskManager.addItem(epic1);
@@ -43,6 +47,7 @@ public class Main {
                 0,
                 "Разобрать вещи в кладовке.",
                 "Выкинуть всё, что не надевал в течение 2 лет.",
+                TaskType.SUBTASK,
                 epic1.getId()
         );
 
@@ -52,6 +57,7 @@ public class Main {
                 0,
                 "Организовать систему хранения.",
                 "Купить доски для полок и вакуумные пакеты.",
+                TaskType.SUBTASK,
                 epic1.getId()
         );
 
@@ -60,7 +66,8 @@ public class Main {
         Epic epic2 = new Epic(
                 0,
                 "Организовать отгрузку товара в Тверь.",
-                "Отгрузка запланирована на 12:00. До этого времени необходимо подготовить документы."
+                "Отгрузка запланирована на 12:00. До этого времени необходимо подготовить документы.",
+                TaskType.EPIC
         );
 
         taskManager.addItem(epic2);
@@ -69,6 +76,7 @@ public class Main {
                 0,
                 "Подписать товарные накладные.",
                 "Подписать все наклыдные на товар, который отправляется в Тверь.",
+                TaskType.SUBTASK,
                 epic1.getId()
         );
 
@@ -78,12 +86,13 @@ public class Main {
                 subtask1.getId(),
                 "Разобрать вещи в кладовке.",
                 "Выкинуть всё, что не надевал в течение 5 лет.",
+                TaskType.SUBTASK,
                 epic1.getId());
 
         taskManager.updateItem(subtask1, TaskStatus.DONE);
 
 
-        /*taskManager.getTaskById(1);
+        *//*taskManager.getTaskById(1);
         taskManager.getTaskById(2);
         taskManager.getSubtaskById(7);
         taskManager.getEpicById(3);
@@ -105,7 +114,7 @@ public class Main {
         System.out.println(epic1);
 
         taskManager.deleteEpicById(3);
-        System.out.println(taskManager.getHistory());*/
+        System.out.println(taskManager.getHistory());*//*
 
         taskManager.getSubtaskById(4);
         taskManager.getEpicById(6);
@@ -122,10 +131,10 @@ public class Main {
 
 
 
-/*        taskManager.deleteTaskById(66);
+*//*        taskManager.deleteTaskById(66);
         taskManager.deleteEpicById(66);
         taskManager.getSubtaskById(89);
-        System.out.println(taskManager.getTaskById(1));*/
+        System.out.println(taskManager.getTaskById(1));*//*
 
 
 
@@ -134,4 +143,4 @@ public class Main {
 
 
     }
-}
+}*/

@@ -1,7 +1,7 @@
 package managers;
 
+import annex.ManagerSaveException;
 import annex.TaskStatus;
-import tasktypes.Epic;
 import tasktypes.Subtask;
 import tasktypes.Task;
 
@@ -28,23 +28,16 @@ public interface TaskManger {
     void deleteSubtasks();
 
     // 2.3.Получение по идентификатору.
-    void getTaskById(int id);
-    void getEpicById(int id);
-    void getSubtaskById(int id);
+    Task getTaskById(int id) throws ManagerSaveException;
+    Task getEpicById(int id) throws ManagerSaveException;
+    Task getSubtaskById(int id) throws ManagerSaveException;
 
     // 2.4.Создание. Сам объект должен передаваться в качестве параметра.
     void addItem(Task task);
 
-    void addItem(Epic task);
-
-    void addItem(Subtask task);
-
     // 2.5. Обновление. Новая версия объекта с верным идентификатором передаётся в виде параметра.
     void updateItem(Task task, TaskStatus status);
 
-    void updateItem(Epic task);
-
-    void updateItem(Subtask task, TaskStatus status);
 
     // 2.6. Удаление по идентификатору.
     void deleteTaskById(int id);

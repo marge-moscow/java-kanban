@@ -1,18 +1,21 @@
 package tasktypes;
 
 import annex.TaskStatus;
+import annex.TaskType;
 
 public class Task {
     protected int id;
     protected String name;
     protected String description;
     protected TaskStatus status;
+    protected TaskType type;
 
-    public Task(int id, String name, String description) {
+    public Task(int id, String name, String description, TaskType type) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.status = TaskStatus.NEW;
+        this.type = type;
     }
 
     public int getId() {
@@ -47,6 +50,15 @@ public class Task {
     public void setStatus(TaskStatus status) {
         this.status = status;
     }
+
+    public TaskType getType() {
+        return type;
+    }
+
+    public void setType(TaskType type) {
+        this.type = type;
+    }
+
     @Override
     public String toString() {
         return id + "." + name + "\n  Описание: " + description + "\n  Статус: " + status;
