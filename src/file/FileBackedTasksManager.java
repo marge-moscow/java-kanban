@@ -73,7 +73,48 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
         fileBackedTasksManager.addItem(subtask3);
 
         fileBackedTasksManager.getSubtaskById(4);
-        System.out.println(fileBackedTasksManager.getHistory());
+        //System.out.println(fileBackedTasksManager.getHistory());
+
+
+        // "Удаление всех задач и эпиков и сабтасок не приводит к очистке файла и истории".
+        // Евгений, привет!
+        // А может быть такое, что в твоем примере (ниже) история не удаляется,
+        // потому что мы уже создали новый объект fileBackedTasksManager и считали в него/с ним файл.
+        // А удалить пытаемся в старом taskManager.
+        // Потому что, если удалять в fileBackedTasksManager (пробую ниже), то всё удаляется и история меняется.
+        // Ровно как и если удалять у taskManager.deleteTasks(), но не вызывать после этого
+        // просмотр System.out.println(fileBackedTasksManager.getHistory())
+        // - который был создан и считан до изменений.
+        // Я надеюсь, что правильно сформулировала свою мысль...
+
+
+        //Твой пример теста:
+/*        System.out.println("History");
+        taskManager.deleteTasks();
+        taskManager.deleteEpics();
+        taskManager.deleteSubtasks();
+        System.out.println(fileBackedTasksManager.getHistory());*/
+
+
+        //Так работает:
+/*        System.out.println("History");
+        taskManager.deleteTasks();
+        taskManager.deleteEpics();
+        taskManager.deleteSubtasks();
+        System.out.println(taskManager.getHistory());*/
+
+
+        //И так тоже работает:
+/*        System.out.println("History");
+        fileBackedTasksManager.deleteTasks();
+        fileBackedTasksManager.deleteSubtasks();
+        fileBackedTasksManager.deleteEpics();
+        System.out.println(fileBackedTasksManager.getHistory());*/
+
+
+
+
+
 
     }
 
@@ -84,19 +125,28 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
             for (Integer id: tasks.keySet()) {
                 fileWriter.write(FileWriterAdd.toString(tasks.get(id)));
                 fileWriter.append("\n");
+                if (tasks.isEmpty()){
+                    throw new ManagerSaveException ("Ничего не выходит :(");
+                }
             }
             for (Integer id: epics.keySet()) {
                 fileWriter.write(FileWriterAdd.toString(epics.get(id)));
                 fileWriter.append("\n");
+                if (epics.isEmpty()){
+                    throw new ManagerSaveException ("Ничего не выходит :(");
+                }
             }
             for (Integer id: subtasks.keySet()) {
                 fileWriter.write(FileWriterAdd.toString(subtasks.get(id)));
                 fileWriter.append("\n");
+                if (subtasks.isEmpty()){
+                    throw new ManagerSaveException ("Ничего не выходит :(");
+                }
             }
 
-            if (tasks.isEmpty()){
-                throw new ManagerSaveException ("Ничего не выходит :(");
-            }
+            //if (tasks.isEmpty()){
+            //    throw new ManagerSaveException ("Ничего не выходит :(");
+            //}
 
             fileWriter.append("\n");
             fileWriter.write(FileWriterAdd.historyToString(historyManager));

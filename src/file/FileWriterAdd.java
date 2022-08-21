@@ -11,7 +11,7 @@ import java.nio.file.Path;
 public class FileWriterAdd {
 
     public static void createFile() {
-        Path path = Path.of("C://Users//Marge//IdeaProjects//java-kanban//file.csv");
+        Path path = Path.of("file.csv");
         try {
             Files.createFile(path);
         } catch (IOException e) {
