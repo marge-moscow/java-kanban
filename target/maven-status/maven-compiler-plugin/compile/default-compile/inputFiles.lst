@@ -1,0 +1,16 @@
+C:\Users\Marge\IdeaProjects\java-kanban\src\main\java\model\Epic.java
+C:\Users\Marge\IdeaProjects\java-kanban\src\main\java\exceptions\ManagerSaveException.java
+C:\Users\Marge\IdeaProjects\java-kanban\src\main\java\model\Subtask.java
+C:\Users\Marge\IdeaProjects\java-kanban\src\main\java\managers\Managers.java
+C:\Users\Marge\IdeaProjects\java-kanban\src\main\java\model\Task.java
+C:\Users\Marge\IdeaProjects\java-kanban\src\main\java\managers\file\FileBackedTasksManager.java
+C:\Users\Marge\IdeaProjects\java-kanban\src\main\java\managers\history\HistoryManager.java
+C:\Users\Marge\IdeaProjects\java-kanban\src\main\java\Main.java
+C:\Users\Marge\IdeaProjects\java-kanban\src\main\java\managers\file\FileWriterAdd.java
+C:\Users\Marge\IdeaProjects\java-kanban\src\main\java\managers\history\InMemoryHistoryManager.java
+C:\Users\Marge\IdeaProjects\java-kanban\src\main\java\managers\history\Node.java
+C:\Users\Marge\IdeaProjects\java-kanban\src\main\java\model\TaskStatus.java
+C:\Users\Marge\IdeaProjects\java-kanban\src\main\java\managers\file\FileReader.java
+C:\Users\Marge\IdeaProjects\java-kanban\src\main\java\managers\memoryManager\InMemoryTaskManager.java
+C:\Users\Marge\IdeaProjects\java-kanban\src\main\java\model\TaskType.java
+C:\Users\Marge\IdeaProjects\java-kanban\src\main\java\managers\TaskManger.java
