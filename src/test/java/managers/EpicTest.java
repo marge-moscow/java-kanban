@@ -9,6 +9,10 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.Month;
 
 
 public class EpicTest {
@@ -34,7 +38,7 @@ public class EpicTest {
 
         subtask1.setEpicId(epicId);
         subtask2.setEpicId(epicId);
-        
+
     }
 
     @Test
@@ -95,6 +99,13 @@ public class EpicTest {
 
         assertEquals(expected, actual, "Статус не совпадает.");
 
+    }
+
+    @Test
+    public void testSetEpicStartTime() {
+        subtask1.setStartTime(LocalDateTime.of(2022-10-05, 10));
+        //subtask1.setStartTime(LocalDate.of(2022, Month.OCTOBER, 5) + LocalTime.of(13, 00,00));
+        System.out.println(subtask1);
     }
 
 }

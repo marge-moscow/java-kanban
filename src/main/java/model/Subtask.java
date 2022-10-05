@@ -1,5 +1,8 @@
 package model;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+
 public class Subtask extends Task {
     private int epicId;
 
@@ -13,11 +16,14 @@ public class Subtask extends Task {
 
     }
 
+    //Конструктор для ТЗ 7 спринта со временем начала и продолжительностью
     public Subtask(int id, String name, String description, int epicId) {
         super(id, name, description);
-        this.epicId = epicId;
         setType(TaskType.SUBTASK);
+        setEpicId(epicId);
     }
+
+
 
     public void setEpicId(int epicId) {
         this.epicId = epicId;

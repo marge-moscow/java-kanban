@@ -1,12 +1,18 @@
 package model;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+
 public class Task {
     protected int id;
     protected String name;
     protected String description;
     protected TaskStatus status;
     protected TaskType type;
+    protected Duration duration;
+    protected LocalDateTime startTime;
 
+    //Первоначальный конструктор для ТЗ 4-6
     public Task(int id, String name, String description, TaskType type) {
         this.id = id;
         this.name = name;
@@ -15,19 +21,42 @@ public class Task {
         this.type = type;
     }
 
+    //Конструктор для тестов
     public Task() {
         setType(TaskType.TASK);
 
     }
 
+    //Конструктор для ТЗ 7 спринта со временем начала и продолжительностью
     public Task(int id, String name, String description) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.status = TaskStatus.NEW;
-        this.type = TaskType.TASK;
+        setType(TaskType.TASK);
+        //Нужно ли сюда выносить getEndTime?
     }
 
+    public void setDuration(Duration duration) {
+        this.duration = duration;
+    }
+
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
+
+    public LocalDateTime getEndTime() {
+        return startTime.plus(duration);
+    }
+
+
+    public Duration getDuration() {
+        return duration;
+    }
+
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
 
     public int getId() {
 
