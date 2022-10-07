@@ -1,21 +1,22 @@
-/*import model.TaskType;
+import exceptions.ManagerSaveException;
+import model.*;
 import managers.Managers;
 import managers.TaskManger;
-import tasktypes.Epic;
-import tasktypes.Subtask;
-import tasktypes.Task;
-import model.TaskStatus;
+
+import java.time.Duration;
+import java.time.LocalDateTime;
 
 public class Main {
-    public static void main(String[] args) {*/
+    public static void main(String[] args) throws ManagerSaveException {
 
-        /*TaskManger taskManager = Managers.getDefault();
+        TaskManger taskManager = Managers.getDefault();
 
         Task task1 = new Task(
                 0,
-                "Купить корм для рыбок.",
-                "Корм для рыб Зоомир Гурман-3 30г.",
-                TaskType.TASK
+                "Task1",
+                "Task1Description",
+                LocalDateTime.of(2022,10,07,23,00),
+                Duration.ofMinutes(15)
         );
 
         taskManager.addItem(task1);
@@ -25,18 +26,18 @@ public class Main {
 
         Task task2 = new Task(
                 0,
-                "Договориться с директором 'Астры' о встрече.",
-                "Телефон компании +74955634788. Директор - Пётр Анатольевич.",
-                TaskType.TASK
+                "Task2",
+                "Task2Description",
+                LocalDateTime.of(2022,10,05,18,00),
+                Duration.ofMinutes(15)
         );
 
         taskManager.addItem(task2);
 
         Epic epic1 = new Epic(
                 0,
-                "Навести порядок в кладовке.",
-                "Разобрать все вещи и организовать систему хранения.",
-                TaskType.EPIC
+                "Epic1",
+                "Epic1Description"
         );
 
         taskManager.addItem(epic1);
@@ -45,25 +46,27 @@ public class Main {
 
         Subtask subtask1 = new Subtask(
                 0,
-                "Разобрать вещи в кладовке.",
-                "Выкинуть всё, что не надевал в течение 2 лет.",
-                TaskType.SUBTASK,
-                epic1.getId()
+                "Subtask1",
+                "Subtask1Description",
+                LocalDateTime.of(2022,10,04,07,00),
+                Duration.ofMinutes(15),
+                3
         );
 
         taskManager.addItem(subtask1);
 
         Subtask subtask2 = new Subtask(
                 0,
-                "Организовать систему хранения.",
-                "Купить доски для полок и вакуумные пакеты.",
-                TaskType.SUBTASK,
-                epic1.getId()
+                "Subtask2",
+                "Subtask2Description",
+               null,
+                Duration.ofMinutes(15),
+                3
         );
 
         taskManager.addItem(subtask2);
 
-        Epic epic2 = new Epic(
+        /*Epic epic2 = new Epic(
                 0,
                 "Организовать отгрузку товара в Тверь.",
                 "Отгрузка запланирована на 12:00. До этого времени необходимо подготовить документы.",
@@ -89,12 +92,12 @@ public class Main {
                 TaskType.SUBTASK,
                 epic1.getId());
 
-        taskManager.updateItem(subtask1, TaskStatus.DONE);
+        taskManager.updateItem(subtask1, TaskStatus.DONE);*/
 
 
-        *//*taskManager.getTaskById(1);
+        taskManager.getTaskById(1);
         taskManager.getTaskById(2);
-        taskManager.getSubtaskById(7);
+        //taskManager.getSubtaskById(7);
         taskManager.getEpicById(3);
         taskManager.getSubtaskById(4);
         taskManager.getSubtaskById(5);
@@ -102,11 +105,11 @@ public class Main {
         taskManager.getEpicById(3);
         taskManager.getSubtaskById(5);
         taskManager.getTaskById(1);
-        taskManager.getEpicById(6);
+        //taskManager.getEpicById(6);
 
         System.out.println(taskManager.getHistory());
 
-        taskManager.deleteTaskById(1);
+     /*   taskManager.deleteTaskById(1);
         taskManager.deleteSubtaskById(5);
 
         System.out.println(taskManager.getHistory());
@@ -114,7 +117,7 @@ public class Main {
         System.out.println(epic1);
 
         taskManager.deleteEpicById(3);
-        System.out.println(taskManager.getHistory());*//*
+        System.out.println(taskManager.getHistory());
 
         taskManager.getSubtaskById(4);
         taskManager.getEpicById(6);
@@ -122,19 +125,20 @@ public class Main {
 
         taskManager.deleteSubtasks();
         System.out.println(taskManager.getHistory());
+*/
+
+        System.out.println(taskManager.getPrioritizedTasks(subtask2));
 
 
 
 
 
+/*
 
-
-
-
-*//*        taskManager.deleteTaskById(66);
+      taskManager.deleteTaskById(66);
         taskManager.deleteEpicById(66);
         taskManager.getSubtaskById(89);
-        System.out.println(taskManager.getTaskById(1));*//*
+        System.out.println(taskManager.getTaskById(1));*/
 
 
 
@@ -143,4 +147,4 @@ public class Main {
 
 
     }
-}*/
+}

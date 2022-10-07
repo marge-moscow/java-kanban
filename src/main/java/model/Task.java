@@ -11,30 +11,41 @@ public class Task {
     protected TaskType type;
     protected Duration duration;
     protected LocalDateTime startTime;
+    protected LocalDateTime endTime;
 
     //Первоначальный конструктор для ТЗ 4-6
-    public Task(int id, String name, String description, TaskType type) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.status = TaskStatus.NEW;
-        this.type = type;
-    }
-
-    //Конструктор для тестов
-    public Task() {
-        setType(TaskType.TASK);
-
-    }
-
-    //Конструктор для ТЗ 7 спринта со временем начала и продолжительностью
     public Task(int id, String name, String description) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.status = TaskStatus.NEW;
+        this.type = TaskType.TASK;
+    }
+
+    //Конструктор для тестов
+    public Task(LocalDateTime startTime, Duration duration) {
         setType(TaskType.TASK);
-        //Нужно ли сюда выносить getEndTime?
+        this.startTime = startTime;
+        this.duration = duration;
+        this.endTime = getEndTime();
+
+    }
+
+    public Task(){
+        setType(TaskType.TASK);
+    }
+
+    //Конструктор для ТЗ 7 спринта со временем начала и продолжительностью
+    public Task(int id, String name, String description, LocalDateTime startTime, Duration duration) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.status = TaskStatus.NEW;
+        setType(TaskType.TASK);
+        this.startTime = startTime;
+        this.duration = duration;
+        this.endTime = getEndTime();
+
     }
 
     public void setDuration(Duration duration) {

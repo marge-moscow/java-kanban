@@ -18,6 +18,8 @@ public class InMemoryTaskManager implements TaskManger {
     public HashMap<Integer, Subtask> subtasks = new HashMap<>();
 
 
+
+
     @Override
     public int generateId(){
         return ++startId;
@@ -108,6 +110,7 @@ public class InMemoryTaskManager implements TaskManger {
                     break;
                 case EPIC:
                     epics.put(id, (Epic) task);
+                    checkEpicStatus(id);
                     break;
                 case SUBTASK:
                     subtasks.put(id, (Subtask) task);
@@ -115,6 +118,8 @@ public class InMemoryTaskManager implements TaskManger {
                     int epicId = subtask.getEpicId();
                     Epic epic = epics.get(epicId);
                     epic.addSubtask((Subtask) task);
+                    checkEpicStatus(subtask.getEpicId());
+                    checkEpicStartTimeAndDuration(subtask.getEpicId());
                     break;
                 default:
                     System.out.println("Добавьте тип задачи.");
@@ -146,6 +151,7 @@ public class InMemoryTaskManager implements TaskManger {
                     }
                 }
                 checkEpicStatus(subtask.getEpicId());
+                checkEpicStartTimeAndDuration(subtask.getEpicId());
                 break;
             default:
                 System.out.println("Добавьте тип задачи.");
@@ -201,8 +207,8 @@ public class InMemoryTaskManager implements TaskManger {
 
     // 4. Управление статусами:
     // 4.2. Статус для TaskTypes.Epic
-    @Override
-    public void checkEpicStatus(int id) {
+
+    private void checkEpicStatus(int id) {
         boolean statusDone = false;
         boolean statusNew = false;
 
@@ -238,10 +244,31 @@ public class InMemoryTaskManager implements TaskManger {
         }
     }
 
+    public void checkEpicStartTimeAndDuration(int id) {
+        epics.get(id).setStartTime();
+        epics.get(id).setDuration();
+        epics.get(id).getEndTime();
+    }
+
+    //5. Вывод списка задач в порядке приоритета
+
 
     @Override
-            //Специально созданный метод для красивого вывода истории (бед детальной информации)
+    public Set<Task> getPrioritizedTasks(Task task) {
 
+        Comparator <Task> comparator = Comparator.comparing(Task::getStartTime);
+        Set <Task> taskList = new TreeSet<>(comparator);
+
+        taskList.add(task);
+
+        return taskList;
+
+    }
+
+
+
+    @Override
+    //Специально созданный метод для красивого вывода истории (бед детальной информации)
     public List<String> getHistory(){
         List<String> prettyPrintHistoryList = new ArrayList<>();
         for (Task task: historyManager.getHistory()) {

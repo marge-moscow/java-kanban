@@ -32,11 +32,11 @@ public class FileReader {
 
         if (TaskType.valueOf(parts[1]) == TaskType.SUBTASK) {
             int epicId = Integer.parseInt(parts[5]);
-            task = new Subtask(id, name, description, type, epicId);
+            task = new Subtask(id, name, description, epicId);
         } else if (TaskType.valueOf(parts[1]) == TaskType.EPIC) {
-            task = new Epic(id, name, description, type);
+            task = new Epic(id, name, description);
         } else {
-            task = new Task(id, name, description, type);
+            task = new Task(id, name, description);
         }
 
         return task;

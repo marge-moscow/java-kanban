@@ -3,57 +3,68 @@ package model;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Optional;
 
 public class Epic extends Task {
     protected ArrayList<Subtask> subtasks = new ArrayList<>();
+
+    protected Duration duration;
+    protected LocalDateTime startTime;
     protected LocalDateTime endTime;
 
-    public Epic(int id, String name, String description, TaskType type) {
-        super(id, name, description, type);
+    public Epic(int id, String name, String description) {
+        super(id, name, description);
+        setType(TaskType.EPIC);
+        setStartTime();
+        setDuration();
+        this.endTime = getEndTime();
     }
 
     public Epic() {
         setType(TaskType.EPIC);
-
-    }
-
-    //Конструктор для ТЗ 7 спринта со временем начала и продолжительностью
-    public Epic(int id, String name, String description) {
-        super(id, name, description);
-        setType(TaskType.EPIC);
+        setStartTime();
+        setDuration();
+        this.endTime = getEndTime();
     }
 
     public void setStartTime() {
-        LocalDateTime startTime = LocalDateTime.now(); //Как правильно проинициализировать переменную?
-        for(int i = 0; i < subtasks.size(); i++) {
-            if (subtasks.get(i++).getStartTime().isBefore(subtasks.get(i).getStartTime())) {
-               startTime = subtasks.get(i++).getStartTime();
-            } else {
-                startTime = subtasks.get(i).getStartTime();
-            }
-        }
-        this.startTime = startTime;
+        this.startTime = calculateStartTime();
+    }
+
+    public LocalDateTime calculateStartTime() {
+        Optional<LocalDateTime> minOptional = subtasks.stream()
+                .map(Subtask::getStartTime)
+                .min(LocalDateTime::compareTo);
+        return minOptional.orElse(null);
     }
 
     public void setDuration() {
-        Duration duration = null; //Как правильно проинициализировать переменную?
-        for(int i = 0; i < subtasks.size(); i++) {
-            duration = duration.plus(subtasks.get(i).getDuration());
-        }
-        this.duration = duration;
+        this.duration = calculateDuration();
+    }
 
+    public Duration calculateDuration() {
+        return subtasks.stream()
+                .map(Subtask::getDuration)
+                .reduce(Duration.ofMinutes(0), Duration::plus);
+
+        //Уточнить про метод reduce();
     }
 
     public LocalDateTime getEndTime() {
-        endTime = LocalDateTime.now(); //Как правильно проинициализировать переменную?
-        for(int i = 0; i < subtasks.size(); i++) {
-            if (subtasks.get(i++).getEndTime().isAfter(subtasks.get(i).getStartTime())) {
-                endTime = subtasks.get(i++).getEndTime();
-            } else {
-                endTime = subtasks.get(i).getEndTime();
-            }
-        }
-        return endTime;
+        Optional<LocalDateTime> maxOptional = subtasks.stream()
+                .map(Subtask::getEndTime)
+                .max(LocalDateTime::compareTo);
+        return maxOptional.orElse(null);
+    }
+
+    @Override
+    public Duration getDuration() {
+        return duration;
+    }
+
+    @Override
+    public LocalDateTime getStartTime() {
+        return startTime;
     }
 
     public void addSubtask(Subtask subtask){

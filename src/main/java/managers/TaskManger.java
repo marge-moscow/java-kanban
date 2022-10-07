@@ -6,6 +6,7 @@ import model.Subtask;
 import model.Task;
 
 import java.util.List;
+import java.util.Set;
 
 
 public interface TaskManger {
@@ -52,7 +53,8 @@ public interface TaskManger {
 
     List<String> getHistory();
 
-    void checkEpicStatus(int id);
+    Set<Task> getPrioritizedTasks(Task task);
+
 
 
 }

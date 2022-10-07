@@ -25,8 +25,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
         Task task1 = new Task(
                 0,
                 "Купить корм для рыбок.",
-                "Корм для рыб Зоомир Гурман-3 30г.",
-                TaskType.TASK
+                "Корм для рыб Зоомир Гурман-3 30г."
         );
 
         taskManager.addItem(task1);
@@ -34,8 +33,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
         Epic epic1 = new Epic(
                 0,
                 "Навести порядок в кладовке.",
-                "Разобрать все вещи и организовать систему хранения.",
-                TaskType.EPIC
+                "Разобрать все вещи и организовать систему хранения."
         );
 
         taskManager.addItem(epic1);
@@ -44,7 +42,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
                 0,
                 "Разобрать вещи в кладовке.",
                 "Выкинуть всё.",
-                TaskType.SUBTASK,
                 epic1.getId()
         );
 
@@ -66,7 +63,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
                 0,
                 "Кукареку",
                 "Ку-ку",
-                TaskType.SUBTASK,
                 epic1.getId()
         );
 
