@@ -1,0 +1,7 @@
+id,type,name,status,description,epicId,startTime, duration, endTime
+1,TASK,Купить корм для рыбок.,NEW,Корм для рыб Зоомир Гурман-3 30г.,no StartTime,no Duration,no EndTime
+2,EPIC,Навести порядок в кладовке.,NEW,Разобрать все вещи и организовать систему хранения.,no StartTime,PT0S,no EndTime
+3,SUBTASK,Разобрать вещи в кладовке.,NEW,Выкинуть всё.,2,no StartTime,no Duration,no EndTime
+4,SUBTASK,Разобрать вещи в кладовке.,NEW,Выкинуть всё.,2,no StartTime,no Duration,no EndTime
+5,SUBTASK,Разобрать вещи в кладовке.,NEW,Выкинуть всё.,2,no StartTime,no Duration,no EndTime
+

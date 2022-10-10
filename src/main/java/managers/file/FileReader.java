@@ -28,6 +28,7 @@ public class FileReader {
         String description = parts[4];
         TaskType type = TaskType.valueOf(parts[1]);
 
+
         Task task;
 
         if (TaskType.valueOf(parts[1]) == TaskType.SUBTASK) {

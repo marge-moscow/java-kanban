@@ -17,7 +17,10 @@ public class InMemoryTaskManager implements TaskManger {
     public HashMap<Integer, Epic> epics = new HashMap<>();
     public HashMap<Integer, Subtask> subtasks = new HashMap<>();
 
+    private Comparator <Task> comparator = Comparator.comparing(Task::getStartTime);
+    public Set <Task> prioritizedSet = new TreeSet<>(comparator);
 
+    public List<Task> taskListNoStartTime = new ArrayList<>();
 
 
     @Override
@@ -127,6 +130,7 @@ public class InMemoryTaskManager implements TaskManger {
         } else {
             updateItem(task, task.getStatus());
         }
+
     }
 
 
@@ -244,28 +248,29 @@ public class InMemoryTaskManager implements TaskManger {
         }
     }
 
-    public void checkEpicStartTimeAndDuration(int id) {
+    private void checkEpicStartTimeAndDuration(int id) {
         epics.get(id).setStartTime();
         epics.get(id).setDuration();
         epics.get(id).getEndTime();
     }
 
     //5. Вывод списка задач в порядке приоритета
-
-
     @Override
-    public Set<Task> getPrioritizedTasks(Task task) {
+    public List<Task> getPrioritizedTasks() {
 
-        Comparator <Task> comparator = Comparator.comparing(Task::getStartTime);
-        Set <Task> taskList = new TreeSet<>(comparator);
+        for (Task task: tasks.values()) {
+            if (task.getStartTime() != null ? prioritizedSet.add(task) : taskListNoStartTime.add(task));
+        }
 
-        taskList.add(task);
+        for (Task task: subtasks.values()) {
+            if (task.getStartTime() != null ? prioritizedSet.add(task) : taskListNoStartTime.add(task));
+        }
+
+        List <Task> taskList = new ArrayList(prioritizedSet);
+        taskList.addAll(taskListNoStartTime);
 
         return taskList;
-
     }
-
-
 
     @Override
     //Специально созданный метод для красивого вывода истории (бед детальной информации)

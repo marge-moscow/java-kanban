@@ -3,6 +3,7 @@ package model;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.Optional;
 
 public class Epic extends Task {
@@ -34,6 +35,7 @@ public class Epic extends Task {
     public LocalDateTime calculateStartTime() {
         Optional<LocalDateTime> minOptional = subtasks.stream()
                 .map(Subtask::getStartTime)
+                .filter(Objects :: nonNull)
                 .min(LocalDateTime::compareTo);
         return minOptional.orElse(null);
     }
@@ -45,17 +47,20 @@ public class Epic extends Task {
     public Duration calculateDuration() {
         return subtasks.stream()
                 .map(Subtask::getDuration)
+                .filter(Objects :: nonNull) //ТУТ ВНЕСЛА ИЗМЕНЕНИЕ
                 .reduce(Duration.ofMinutes(0), Duration::plus);
 
-        //Уточнить про метод reduce();
     }
 
     public LocalDateTime getEndTime() {
         Optional<LocalDateTime> maxOptional = subtasks.stream()
                 .map(Subtask::getEndTime)
+                .filter(Objects :: nonNull)
                 .max(LocalDateTime::compareTo);
         return maxOptional.orElse(null);
     }
+
+    //.map(Subtask::getEndTime)
 
     @Override
     public Duration getDuration() {
@@ -91,4 +96,5 @@ public class Epic extends Task {
     public String toString() {
         return super.toString() + "\n  Подзадачи:\n" + subtasks;
     }
+
 }

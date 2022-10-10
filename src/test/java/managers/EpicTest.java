@@ -30,8 +30,8 @@ public class EpicTest {
 
         epicId = epic.getId();
 
-        subtask1 = new Subtask(LocalDateTime.of(2022, 10,6,13, 00), Duration.ofMinutes(15));
-        subtask2 = new Subtask(LocalDateTime.of(2022, 10,6,14, 00), Duration.ofMinutes(20));
+        subtask1 = new Subtask();
+        subtask2 = new Subtask();
 
         subtask1.setEpicId(epicId);
         subtask2.setEpicId(epicId);
@@ -100,6 +100,11 @@ public class EpicTest {
 
     @Test
     public void testCalculateEpicStartTime() {
+        subtask1.setStartTime(LocalDateTime.of(2022, 10,5,14, 00));
+        subtask2.setStartTime(LocalDateTime.of(2022, 10,6,14, 00));
+        subtask1.setDuration(Duration.ofMinutes(20));
+        subtask2.setDuration(Duration.ofMinutes(15));
+
         manager.addItem(subtask1);
         manager.addItem(subtask2);
         assertEquals(subtask1.getStartTime(), epic.getStartTime());
@@ -108,6 +113,11 @@ public class EpicTest {
 
     @Test
     public void testCalculateEpicEndTime() {
+        subtask1.setStartTime(LocalDateTime.of(2022, 10,5,14, 00));
+        subtask2.setStartTime(LocalDateTime.of(2022, 10,6,14, 00));
+        subtask1.setDuration(Duration.ofMinutes(20));
+        subtask2.setDuration(Duration.ofMinutes(15));
+
         manager.addItem(subtask1);
         manager.addItem(subtask2);
         assertEquals(subtask2.getEndTime(), epic.getEndTime());
@@ -115,6 +125,11 @@ public class EpicTest {
     }
     @Test
     public void testCalculateEpicDuration() {
+        subtask1.setStartTime(LocalDateTime.of(2022, 10,5,14, 00));
+        subtask2.setStartTime(LocalDateTime.of(2022, 10,6,14, 00));
+        subtask1.setDuration(Duration.ofMinutes(20));
+        subtask2.setDuration(Duration.ofMinutes(15));
+
         manager.addItem(subtask1);
         manager.addItem(subtask2);
         Duration expectedDuration = Duration.ofMinutes(35);

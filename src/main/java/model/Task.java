@@ -48,6 +48,16 @@ public class Task {
 
     }
 
+    //Для задач, у которых не задано время начала
+    public Task(int id, String name, String description, Duration duration) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.status = TaskStatus.NEW;
+        setType(TaskType.TASK);
+        this.duration = duration;
+    }
+
     public void setDuration(Duration duration) {
         this.duration = duration;
     }
@@ -57,7 +67,12 @@ public class Task {
     }
 
     public LocalDateTime getEndTime() {
-        return startTime.plus(duration);
+        LocalDateTime endTime = null;
+        if (startTime != null) {
+            endTime = startTime.plus(duration);
+        }
+
+        return endTime;
     }
 
 
@@ -114,4 +129,28 @@ public class Task {
     public String toString() {
         return id + "." + name + "\n  Описание: " + description + "\n  Статус: " + status;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Task)) return false;
+
+        Task task = (Task) o;
+
+        if (getName() != null ? !getName().equals(task.getName()) : task.getName() != null) return false;
+        if (getDescription() != null ? !getDescription().equals(task.getDescription()) : task.getDescription() != null)
+            return false;
+        return getType() == task.getType();
+    }
+
+    @Override
+    public int hashCode() {
+        int result = 0;
+        result = 31 * result + (getName() != null ? getName().hashCode() : 0);
+        result = 31 * result + (getDescription() != null ? getDescription().hashCode() : 0);
+        result = 31 * result + (getType() != null ? getType().hashCode() : 0);
+        return result;
+    }
+
 }
+

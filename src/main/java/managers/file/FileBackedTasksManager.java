@@ -11,6 +11,8 @@ import model.Subtask;
 import model.Task;
 
 import java.io.*;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class FileBackedTasksManager extends InMemoryTaskManager implements TaskManger {
@@ -25,7 +27,9 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
         Task task1 = new Task(
                 0,
                 "Купить корм для рыбок.",
-                "Корм для рыб Зоомир Гурман-3 30г."
+                "Корм для рыб Зоомир Гурман-3 30г.",
+                LocalDateTime.of(2022,10,07,23,00),
+                Duration.ofMinutes(15)
         );
 
         taskManager.addItem(task1);
@@ -42,10 +46,33 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
                 0,
                 "Разобрать вещи в кладовке.",
                 "Выкинуть всё.",
+                LocalDateTime.of(2022,10,07,23,00),
+                Duration.ofMinutes(15),
                 epic1.getId()
         );
 
         taskManager.addItem(subtask1);
+
+        Subtask subtask2 = new Subtask(
+                0,
+                "Разобрать вещи в кладовке.",
+                "Выкинуть всё.",
+                LocalDateTime.of(2022,10,01,23,00),
+                Duration.ofMinutes(15),
+                epic1.getId()
+        );
+
+        taskManager.addItem(subtask2);
+
+        Subtask subtask3 = new Subtask(
+                0,
+                "Разобрать вещи в кладовке.",
+                "Выкинуть всё.",
+                Duration.ofMinutes(15),
+                epic1.getId()
+        );
+
+        taskManager.addItem(subtask3);
 
 
 
@@ -56,20 +83,20 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
 
 
         FileBackedTasksManager fileBackedTasksManager = FileBackedTasksManager.loadFromFile(new File("managers.file.csv"));
-        fileBackedTasksManager.getEpics();
+        //fileBackedTasksManager.getEpics();
 
 
-        Subtask subtask3 = new Subtask(
+        /*Subtask subtask4 = new Subtask(
                 0,
                 "Кукареку",
                 "Ку-ку",
                 epic1.getId()
         );
 
-        fileBackedTasksManager.addItem(subtask3);
+        fileBackedTasksManager.addItem(subtask4);*/
 
-        fileBackedTasksManager.getSubtaskById(4);
-        //System.out.println(fileBackedTasksManager.getHistory());
+        //fileBackedTasksManager.getSubtaskById(4);
+        System.out.println(fileBackedTasksManager.getHistory());
 
 
         // "Удаление всех задач и эпиков и сабтасок не приводит к очистке файла и истории".
@@ -117,7 +144,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
     public void save() {
         try {
             Writer fileWriter = new FileWriter("managers.file.csv");
-            fileWriter.write("id,type,name,status,description,epicId\n");
+            fileWriter.write("id,type,name,status,description,epicId,startTime, duration, endTime\n");
             for (Integer id: tasks.keySet()) {
                 fileWriter.write(FileWriterAdd.toString(tasks.get(id)));
                 fileWriter.append("\n");
@@ -156,7 +183,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
 
     public static FileBackedTasksManager loadFromFile(File file) throws Exception {
 
-        FileBackedTasksManager tasksManager = new FileBackedTasksManager();
+        FileBackedTasksManager tasksManager = Managers.getFileBackedTasksManager();
 
         String content = FileReader.readFileContentsOrNull(file);
         String[] lines = content.split("\n");

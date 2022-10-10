@@ -53,7 +53,7 @@ public interface TaskManger {
 
     List<String> getHistory();
 
-    Set<Task> getPrioritizedTasks(Task task);
+    List<Task> getPrioritizedTasks();
 
 
 

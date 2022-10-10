@@ -1,3 +1,4 @@
+/*
 import exceptions.ManagerSaveException;
 import model.*;
 import managers.Managers;
@@ -55,18 +56,30 @@ public class Main {
 
         taskManager.addItem(subtask1);
 
+
+
         Subtask subtask2 = new Subtask(
                 0,
                 "Subtask2",
                 "Subtask2Description",
-               null,
                 Duration.ofMinutes(15),
                 3
         );
 
         taskManager.addItem(subtask2);
 
-        /*Epic epic2 = new Epic(
+        subtask1 = new Subtask(
+                subtask1.getId(),
+                "Разобрать вещи в кладовке.",
+                "Выкинуть всё, что не надевал в течение 5 лет.",
+                LocalDateTime.of(2022,10,25,07,00),
+                Duration.ofMinutes(15),
+                epic1.getId());
+
+        taskManager.updateItem(subtask1, TaskStatus.DONE);
+
+        */
+/*Epic epic2 = new Epic(
                 0,
                 "Организовать отгрузку товара в Тверь.",
                 "Отгрузка запланирована на 12:00. До этого времени необходимо подготовить документы.",
@@ -92,10 +105,12 @@ public class Main {
                 TaskType.SUBTASK,
                 epic1.getId());
 
-        taskManager.updateItem(subtask1, TaskStatus.DONE);*/
+        taskManager.updateItem(subtask1, TaskStatus.DONE);*//*
 
 
-        taskManager.getTaskById(1);
+
+        */
+/*taskManager.getTaskById(1);
         taskManager.getTaskById(2);
         //taskManager.getSubtaskById(7);
         taskManager.getEpicById(3);
@@ -107,9 +122,11 @@ public class Main {
         taskManager.getTaskById(1);
         //taskManager.getEpicById(6);
 
-        System.out.println(taskManager.getHistory());
+        System.out.println(taskManager.getHistory());*//*
 
-     /*   taskManager.deleteTaskById(1);
+
+     */
+/*   taskManager.deleteTaskById(1);
         taskManager.deleteSubtaskById(5);
 
         System.out.println(taskManager.getHistory());
@@ -125,20 +142,23 @@ public class Main {
 
         taskManager.deleteSubtasks();
         System.out.println(taskManager.getHistory());
+*//*
+
+
+        System.out.println(taskManager.getPrioritizedTasks());
+
+
+
+
+
 */
-
-        System.out.println(taskManager.getPrioritizedTasks(subtask2));
-
-
-
-
-
 /*
 
       taskManager.deleteTaskById(66);
         taskManager.deleteEpicById(66);
         taskManager.getSubtaskById(89);
-        System.out.println(taskManager.getTaskById(1));*/
+        System.out.println(taskManager.getTaskById(1));*//*
+
 
 
 
@@ -147,4 +167,4 @@ public class Main {
 
 
     }
-}
+}*/
