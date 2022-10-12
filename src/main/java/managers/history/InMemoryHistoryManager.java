@@ -8,6 +8,7 @@ public class InMemoryHistoryManager implements HistoryManager {
     Map<Integer, Node> nodeMap = new HashMap<>();
 
 
+
     private Node <Task> head;
 
     private Node <Task> tail;

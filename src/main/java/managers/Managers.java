@@ -6,7 +6,7 @@ import managers.history.InMemoryHistoryManager;
 import managers.memoryManager.InMemoryTaskManager;
 
 public class Managers {
-    public static TaskManger getDefault() {
+    public static TaskManager getDefault() {
        return new InMemoryTaskManager();
     }
 

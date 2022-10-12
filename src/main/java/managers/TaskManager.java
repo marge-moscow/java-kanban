@@ -1,25 +1,26 @@
 package managers;
 
 import exceptions.ManagerSaveException;
+import model.Epic;
 import model.TaskStatus;
 import model.Subtask;
 import model.Task;
 
+import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 
 
-public interface TaskManger {
+public interface TaskManager {
 
     int generateId();
 
     // 2.Методы для каждого из типа задач(Задача/Эпик/Подзадача):
     // 2.1.Получение списка всех задач.
-    void getTasks();
+    HashMap<Integer, Task> getTasks();
 
-    void getEpics();
+    HashMap<Integer, Epic> getEpics();
 
-    void getSubtasks();
+    HashMap<Integer, Subtask> getSubtasks();
 
     // 2.2.Удаление всех задач.
     void deleteTasks();

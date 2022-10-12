@@ -17,7 +17,7 @@ public class EpicTest {
     protected Epic epic;
     protected Subtask subtask1;
     protected Subtask subtask2;
-    protected TaskManger manager;
+    protected TaskManager manager;
     protected int epicId;
     protected TaskStatus actual;
     protected TaskStatus expected;
@@ -41,7 +41,6 @@ public class EpicTest {
     @Test
     public void testEpicStatusEmptySubtaskList() {
         expected = TaskStatus.NEW;
-        //manager.checkEpicStatus(epicId);
         actual = epic.getStatus();
 
         assertEquals(expected, actual, "Статус не совпадает.");
@@ -50,10 +49,8 @@ public class EpicTest {
 
     @Test
     public void testEpicStatusAllSubtasksNew() {
-        //subtask1.setStatus(TaskStatus.NEW);
         manager.addItem(subtask1);
         expected = TaskStatus.NEW;
-        //manager.checkEpicStatus(epicId);
         actual = epic.getStatus();
 
         assertEquals(expected, actual, "Статус не совпадает.");
@@ -65,7 +62,6 @@ public class EpicTest {
         subtask1.setStatus(TaskStatus.DONE);
         manager.addItem(subtask1);
         expected = TaskStatus.DONE;
-        //manager.checkEpicStatus(epicId);
         actual = epic.getStatus();
 
         assertEquals(expected, actual, "Статус не совпадает.");
@@ -74,12 +70,10 @@ public class EpicTest {
 
     @Test
     public void testEpicStatusSubtasksNewAndDone() {
-        //subtask1.setStatus(TaskStatus.NEW);
         subtask2.setStatus(TaskStatus.DONE);
         manager.addItem(subtask1);
         manager.addItem(subtask2);
         expected = TaskStatus.IN_PROGRESS;
-        //manager.checkEpicStatus(epicId);
         actual = epic.getStatus();
 
         assertEquals(expected, actual, "Статус не совпадает.");
@@ -91,7 +85,6 @@ public class EpicTest {
         subtask1.setStatus(TaskStatus.IN_PROGRESS);
         manager.addItem(subtask1);
         expected = TaskStatus.IN_PROGRESS;
-        //manager.checkEpicStatus(epicId);
         actual = epic.getStatus();
 
         assertEquals(expected, actual, "Статус не совпадает.");
@@ -134,12 +127,6 @@ public class EpicTest {
         manager.addItem(subtask2);
         Duration expectedDuration = Duration.ofMinutes(35);
         assertEquals(expectedDuration, epic.getDuration());
-
-    }
-
-    @Test
-    public void test() {
-
 
     }
 

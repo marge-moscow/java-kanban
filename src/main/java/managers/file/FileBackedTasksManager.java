@@ -1,10 +1,11 @@
 package managers.file;
 
 import exceptions.ManagerSaveException;
+import managers.history.HistoryManager;
+import managers.history.InMemoryHistoryManager;
 import model.TaskStatus;
-import model.TaskType;
 import managers.Managers;
-import managers.TaskManger;
+import managers.TaskManager;
 import managers.memoryManager.InMemoryTaskManager;
 import model.Epic;
 import model.Subtask;
@@ -13,15 +14,16 @@ import model.Task;
 import java.io.*;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 
-public class FileBackedTasksManager extends InMemoryTaskManager implements TaskManger {
+public class FileBackedTasksManager extends InMemoryTaskManager implements TaskManager {
     protected static List <Integer> history;
 
 
     public static void main(String[] args) throws Exception {
 
-        TaskManger taskManager = Managers.getFileBackedTasksManager();
+        TaskManager taskManager = Managers.getFileBackedTasksManager();
 
         FileWriterAdd.createFile();
         Task task1 = new Task(
@@ -79,24 +81,25 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
         taskManager.getSubtaskById(3);
         taskManager.getTaskById(1);
 
+        taskManager.getTaskById(89);
+
         System.out.println(taskManager.getHistory());
 
 
-        FileBackedTasksManager fileBackedTasksManager = FileBackedTasksManager.loadFromFile(new File("managers.file.csv"));
-        //fileBackedTasksManager.getEpics();
+       FileBackedTasksManager fileBackedTasksManager = FileBackedTasksManager.loadFromFile(new File("managers.file.csv"));
+       fileBackedTasksManager.getEpics();
 
 
-        /*Subtask subtask4 = new Subtask(
+        Subtask subtask4 = new Subtask(
                 0,
                 "Кукареку",
                 "Ку-ку",
                 epic1.getId()
         );
 
-        fileBackedTasksManager.addItem(subtask4);*/
-
-        //fileBackedTasksManager.getSubtaskById(4);
-        System.out.println(fileBackedTasksManager.getHistory());
+        fileBackedTasksManager.addItem(subtask4);
+        fileBackedTasksManager.getSubtaskById(6);
+      //System.out.println(fileBackedTasksManager.getHistory());
 
 
         // "Удаление всех задач и эпиков и сабтасок не приводит к очистке файла и истории".
@@ -136,15 +139,12 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
 
 
 
-
-
-
     }
 
     public void save() {
         try {
             Writer fileWriter = new FileWriter("managers.file.csv");
-            fileWriter.write("id,type,name,status,description,epicId,startTime, duration, endTime\n");
+            fileWriter.write("id,type,name,status,description,startTime,duration,endTime,epicId\n");
             for (Integer id: tasks.keySet()) {
                 fileWriter.write(FileWriterAdd.toString(tasks.get(id)));
                 fileWriter.append("\n");
@@ -166,10 +166,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
                     throw new ManagerSaveException ("Ничего не выходит :(");
                 }
             }
-
-            //if (tasks.isEmpty()){
-            //    throw new ManagerSaveException ("Ничего не выходит :(");
-            //}
 
             fileWriter.append("\n");
             fileWriter.write(FileWriterAdd.historyToString(historyManager));
@@ -194,12 +190,14 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
                 history = FileReader.historyFromString(lines[i + 1]);
                 break;
             }
+
             Task task = FileReader.fromString(line);
             int id = task.getId();
             if (id > startId) {
                 startId = id;
             }
             tasksManager.addItem(task);
+
         }
 
         tasksManager.startId = startId;
@@ -207,21 +205,24 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
     }
 
     @Override
-    public void getTasks() {
-        super.getTasks();
+    public HashMap<Integer, Task> getTasks() {
+        HashMap<Integer, Task> hashMap = super.getTasks();
         save();
+        return hashMap;
     }
 
     @Override
-    public void getEpics() {
-        super.getEpics();
+    public HashMap<Integer, Epic> getEpics() {
+        HashMap<Integer, Epic> hashMap = super.getEpics();
         save();
+        return hashMap;
     }
 
     @Override
-    public void getSubtasks() {
-        super.getSubtasks();
+    public HashMap<Integer, Subtask> getSubtasks() {
+        HashMap<Integer, Subtask> hashMap = super.getSubtasks();
         save();
+        return hashMap;
     }
 
     @Override

@@ -1,16 +1,17 @@
 package managers.memoryManager;
 
-import managers.TaskManger;
+import managers.TaskManager;
 import managers.history.InMemoryHistoryManager;
 import model.Epic;
 import model.Subtask;
 import model.Task;
 import model.TaskStatus;
 
+import java.io.IOException;
 import java.util.*;
 
-public class InMemoryTaskManager implements TaskManger {
-    protected InMemoryHistoryManager historyManager = new InMemoryHistoryManager();
+public class InMemoryTaskManager implements TaskManager {
+    protected static InMemoryHistoryManager historyManager = new InMemoryHistoryManager();
 
     protected int startId;
     public HashMap<Integer, Task> tasks = new HashMap<>();
@@ -32,23 +33,25 @@ public class InMemoryTaskManager implements TaskManger {
     // 2.1.Получение списка всех задач.
 
     @Override
-    public void getTasks() {
-        printTask(tasks);
+    public HashMap<Integer, Task> getTasks() {
+        addTaskToHistory(tasks);
+        return tasks;
     }
 
     @Override
-    public void getEpics() {
-        printTask(epics);
+    public HashMap<Integer, Epic> getEpics() {
+        addTaskToHistory(epics);
+        return epics;
     }
 
     @Override
-    public void getSubtasks() {
-        printTask(subtasks);
+    public HashMap<Integer, Subtask> getSubtasks() {
+        addTaskToHistory(subtasks);
+        return subtasks;
     }
 
-    private void printTask (HashMap <Integer, ? extends Task> list){
+    private void addTaskToHistory (HashMap <Integer, ? extends Task> list){
         for(Task task: list.values()) {
-            System.out.println(task);
             historyManager.add(task);
         }
     }
@@ -75,6 +78,8 @@ public class InMemoryTaskManager implements TaskManger {
             historyManager.remove(id);
         }
         list.clear();
+        prioritizedSet.clear();
+        taskListNoStartTime.clear();
     }
 
     // 2.3.Получение по идентификатору.
@@ -92,12 +97,15 @@ public class InMemoryTaskManager implements TaskManger {
         return getById(subtasks, id);
     }
 
-    private Task getById (HashMap <Integer, ? extends Task> list, int id){
-        Task task = list.get(id);
-        if (task == null) {
-            return (Task) Collections.EMPTY_LIST;
+    private Task getById (HashMap <Integer, ? extends Task> list, int id) {
+        Task task = null;
+        try {
+            task = list.get(id);
+            historyManager.add(task);
+        } catch (Exception e) {
+            System.out.println("Задачи с ID " + id + " нет в списке задач");
         }
-        historyManager.add(task);
+
         return task;
     }
 
@@ -170,6 +178,12 @@ public class InMemoryTaskManager implements TaskManger {
             return;
         }
         tasks.remove(id);
+        if (prioritizedSet.contains(id)){
+            prioritizedSet.remove(id);
+        }
+        if (taskListNoStartTime.contains(id)) {
+            taskListNoStartTime.remove(id);
+        }
         historyManager.remove(id);
 
     }
@@ -181,12 +195,21 @@ public class InMemoryTaskManager implements TaskManger {
         }
         Epic epic = epics.get(id);
         epics.remove(id);
-        historyManager.remove(id);
+
 
         for (Subtask item: epic.getSubtasks()) {
             subtasks.remove(item.getId());
             historyManager.remove(item.getId());
         }
+
+        if (prioritizedSet.contains(id)){
+            prioritizedSet.remove(id);
+        }
+        if (taskListNoStartTime.contains(id)) {
+            taskListNoStartTime.remove(id);
+        }
+
+        historyManager.remove(id);
     }
 
     @Override
@@ -197,6 +220,13 @@ public class InMemoryTaskManager implements TaskManger {
         epics.get(subtasks.get(id).getEpicId()).deleteSubtask(subtasks.get(id));
         subtasks.remove(id);
         historyManager.remove(id);
+
+        if (prioritizedSet.contains(id)){
+            prioritizedSet.remove(id);
+        }
+        if (taskListNoStartTime.contains(id)) {
+            taskListNoStartTime.remove(id);
+        }
     }
 
     // 3. Дополнительные методы:

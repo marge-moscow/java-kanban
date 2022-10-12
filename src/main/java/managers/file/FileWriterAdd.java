@@ -31,7 +31,7 @@ public class FileWriterAdd {
 
         if (task.getType() == TaskType.SUBTASK) {
             Subtask subtask = (Subtask) task;
-            line = String.join(",", Integer.toString(id), subtask.getType().toString(), subtask.getName(), subtask.getStatus().toString(), subtask.getDescription(), Integer.toString(subtask.getEpicId()), checkStartTime(subtask), checkDuration(subtask), checkEndTime(subtask));
+            line = String.join(",", Integer.toString(id), subtask.getType().toString(), subtask.getName(), subtask.getStatus().toString(), subtask.getDescription(),  checkStartTime(subtask), checkDuration(subtask), checkEndTime(subtask), Integer.toString(subtask.getEpicId()));
         } else {
             line = String.join(",", Integer.toString(id), task.getType().toString(), task.getName(), task.getStatus().toString(), task.getDescription(), checkStartTime(task), checkDuration(task), checkEndTime(task));
         }
@@ -39,7 +39,7 @@ public class FileWriterAdd {
         return line;
     }
 
-    private static String checkStartTime(Task task) {
+    public static String checkStartTime(Task task) {
         String line;
         if (task.getStartTime() == null) {
             line = "no StartTime";

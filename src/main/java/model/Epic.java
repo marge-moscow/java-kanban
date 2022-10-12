@@ -47,7 +47,7 @@ public class Epic extends Task {
     public Duration calculateDuration() {
         return subtasks.stream()
                 .map(Subtask::getDuration)
-                .filter(Objects :: nonNull) //ТУТ ВНЕСЛА ИЗМЕНЕНИЕ
+                .filter(Objects :: nonNull)
                 .reduce(Duration.ofMinutes(0), Duration::plus);
 
     }
