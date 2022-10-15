@@ -5,9 +5,7 @@ import model.Task;
 import java.util.*;
 
 public class InMemoryHistoryManager implements HistoryManager {
-    Map<Integer, Node> nodeMap = new HashMap<>();
-
-
+    private Map <Integer, Node<Task>> nodeMap = new HashMap<>();
 
     private Node <Task> head;
 
@@ -29,7 +27,7 @@ public class InMemoryHistoryManager implements HistoryManager {
     }
 
 
-    private List<Task> getTasks(){
+    /*private List<Task> getTasks(){
         List<Task> taskHistory = new ArrayList<>();
         Node node = head;
         while(node != null){
@@ -40,7 +38,7 @@ public class InMemoryHistoryManager implements HistoryManager {
 
         return taskHistory;
 
-    }
+    }*/
 
     @Override
     public void add(Task task) {
@@ -54,7 +52,13 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     @Override
     public List<Task> getHistory() {
-        return getTasks();
+        List<Task> taskHistory = new ArrayList<>();
+        Node<Task> node = head;
+        while(node != null){
+            taskHistory.add(node.getTask());
+            node = node.getNext();
+        }
+        return taskHistory;
     }
 
     @Override

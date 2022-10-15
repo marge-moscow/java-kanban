@@ -1,8 +1,5 @@
 package managers.file;
 
-import exceptions.ManagerSaveException;
-import managers.history.HistoryManager;
-import managers.history.InMemoryHistoryManager;
 import model.TaskStatus;
 import managers.Managers;
 import managers.TaskManager;
@@ -148,30 +145,30 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
             for (Integer id: tasks.keySet()) {
                 fileWriter.write(FileWriterAdd.toString(tasks.get(id)));
                 fileWriter.append("\n");
-                if (tasks.isEmpty()){
+                /*if (tasks.isEmpty()){
                     throw new ManagerSaveException ("Ничего не выходит :(");
-                }
+                }*/
             }
             for (Integer id: epics.keySet()) {
                 fileWriter.write(FileWriterAdd.toString(epics.get(id)));
                 fileWriter.append("\n");
-                if (epics.isEmpty()){
+                /*if (epics.isEmpty()){
                     throw new ManagerSaveException ("Ничего не выходит :(");
-                }
+                }*/
             }
             for (Integer id: subtasks.keySet()) {
                 fileWriter.write(FileWriterAdd.toString(subtasks.get(id)));
                 fileWriter.append("\n");
-                if (subtasks.isEmpty()){
+                /*if (subtasks.isEmpty()){
                     throw new ManagerSaveException ("Ничего не выходит :(");
-                }
+                }*/
             }
 
             fileWriter.append("\n");
             fileWriter.write(FileWriterAdd.historyToString(historyManager));
             fileWriter.close();
 
-        } catch (ManagerSaveException | IOException e) {
+        } catch (IOException e) {
             System.out.println(e.getMessage());
 
         }

@@ -10,15 +10,14 @@ import org.junit.jupiter.api.Test;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public abstract class HistoryManagerTest<T extends HistoryManager> {
-
+    T manager;
     protected Task task;
-    protected Node <Task> head;
-    protected Node <Task> tail;
     public abstract T getManager();
 
     //a. Пустая история задач.
@@ -27,7 +26,7 @@ public abstract class HistoryManagerTest<T extends HistoryManager> {
 
     @BeforeEach
     void init(){
-        T manager = getManager();
+        manager = getManager();
         task = new Task(
                 0,
                 "Task1",
@@ -39,11 +38,11 @@ public abstract class HistoryManagerTest<T extends HistoryManager> {
     }
 
     @Test
-    void addTest() {
-
-        getManager().add(task);
-        Map<Integer, Node> expextedNodeMap = new HashMap<>();
-
+    void addTest() { //TODO сделать с 2-3 задачами.
+        manager.add(task);
+        List<Task> expected = List.of(task);
+        List<Task> actual = manager.getHistory();
+        assertEquals(expected, actual, "Не совпадает");
 
     }
 

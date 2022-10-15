@@ -1,6 +1,5 @@
 package managers;
 
-import exceptions.ManagerSaveException;
 import model.Epic;
 import model.TaskStatus;
 import model.Subtask;
@@ -30,9 +29,9 @@ public interface TaskManager {
     void deleteSubtasks();
 
     // 2.3.Получение по идентификатору.
-    Task getTaskById(int id) throws ManagerSaveException;
-    Task getEpicById(int id) throws ManagerSaveException;
-    Task getSubtaskById(int id) throws ManagerSaveException;
+    Task getTaskById(int id);
+    Task getEpicById(int id);
+    Task getSubtaskById(int id);
 
     // 2.4.Создание. Сам объект должен передаваться в качестве параметра.
     void addItem(Task task);

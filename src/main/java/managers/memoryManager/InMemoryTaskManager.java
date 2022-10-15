@@ -1,5 +1,6 @@
 package managers.memoryManager;
 
+import exceptions.NoTimeException;
 import managers.TaskManager;
 import managers.history.InMemoryHistoryManager;
 import model.Epic;
@@ -115,25 +116,29 @@ public class InMemoryTaskManager implements TaskManager {
         if(task.getId() <= 0) {
             int id = generateId();
             task.setId(id);
-            switch (task.getType()) {
-                case TASK:
-                    tasks.put(id, task);
-                    break;
-                case EPIC:
-                    epics.put(id, (Epic) task);
-                    checkEpicStatus(id);
-                    break;
-                case SUBTASK:
-                    subtasks.put(id, (Subtask) task);
-                    Subtask subtask = (Subtask) task;
-                    int epicId = subtask.getEpicId();
-                    Epic epic = epics.get(epicId);
-                    epic.addSubtask((Subtask) task);
-                    checkEpicStatus(subtask.getEpicId());
-                    checkEpicStartTimeAndDuration(subtask.getEpicId());
-                    break;
-                default:
-                    System.out.println("Добавьте тип задачи.");
+            if (!checkTaskStartAndEndTime(task)) {
+                switch (task.getType()) {
+                    case TASK:
+                        tasks.put(id, task);
+                        break;
+                    case EPIC:
+                        epics.put(id, (Epic) task);
+                        checkEpicStatus(id);
+                        break;
+                    case SUBTASK:
+                        subtasks.put(id, (Subtask) task);
+                        Subtask subtask = (Subtask) task;
+                        int epicId = subtask.getEpicId();
+                        Epic epic = epics.get(epicId);
+                        epic.addSubtask((Subtask) task);
+                        checkEpicStatus(subtask.getEpicId());
+                        checkEpicStartTimeAndDuration(subtask.getEpicId());
+                        break;
+                    default:
+                        System.out.println("Добавьте тип задачи.");
+                }
+            } else {
+                throw new NoTimeException("Измените время задачи");
             }
         } else {
             updateItem(task, task.getStatus());
@@ -282,6 +287,19 @@ public class InMemoryTaskManager implements TaskManager {
         epics.get(id).setStartTime();
         epics.get(id).setDuration();
         epics.get(id).getEndTime();
+    }
+
+    private boolean checkTaskStartAndEndTime(Task newTask) {
+        if (newTask.getStartTime() == null) {
+            return true;
+        }
+        return prioritizedSet.stream()
+                .anyMatch(task ->
+                        ((newTask.getStartTime().isAfter(task.getStartTime()) || newTask.getStartTime().isEqual(task.getStartTime()))
+                                && (newTask.getStartTime().isBefore(task.getEndTime()) || newTask.getStartTime().isEqual(task.getEndTime())))
+                                ||
+                                ((newTask.getEndTime().isAfter(task.getStartTime()) || newTask.getEndTime().isEqual(task.getStartTime()))
+                                        && (newTask.getEndTime().isBefore(task.getEndTime()) || newTask.getEndTime().isEqual(task.getEndTime()))));
     }
 
     //5. Вывод списка задач в порядке приоритета

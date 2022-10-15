@@ -1,12 +1,13 @@
 package managers;
 
-import exceptions.ManagerSaveException;
+import exceptions.NoTimeException;
 import model.Epic;
 import model.Subtask;
 import model.Task;
 import model.TaskStatus;
 import org.junit.jupiter.api.*;
 
+import java.lang.reflect.Executable;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -35,9 +36,14 @@ public abstract class TaskManagerTest<T extends TaskManager> {
                 LocalDateTime.of(2022, 10,10, 20, 00),
                 Duration.ofMinutes(15)
         );
+
         epic = new Epic();
 
     }
+
+    /*Subtask initSubtask(){
+
+    }*/ //TODO добавить отдельный метод для создания сабтаска
 
     //Стандартное поведение
     //Пустой список задач
@@ -84,7 +90,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     @Test
     void getSubtasksTestStandard() {
         manager.addItem(epic);
-        subtask = new Subtask(  //ВОТ ТОЛЬКО ВОПРОС, МОЖНО ЛИ ТАК ДЕЛАТЬ
+        subtask = new Subtask(
                 0,
                 "Subtask1",
                 "SubtaskDescription1",
@@ -143,7 +149,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void getTaskByIdTestStandard() throws ManagerSaveException { //Может ли тестовый метод выкидывать исключение
+    void getTaskByIdTestStandard() {
         manager.addItem(task);
         int id = task.getId();
         Task expected = task;
@@ -153,21 +159,21 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void getTaskByIdTestEmptyTasksList() { //ВОПРОС С ДАНЫМ МЕТОДОМ
-        HashMap<Integer, Task> actual = null;
+    void getTaskByIdTestEmptyTasksList() {
+        Task actual = manager.getTaskById(1);
         assertNull(actual, "Не совпадает");
 
     }
 
     @Test
-    void getTaskByIdTestWrongId() throws ManagerSaveException {
+    void getTaskByIdTestWrongId() {
         Task actual = manager.getTaskById(89);
         assertNull(actual, "Не совпадает");
 
     }
 
     @Test
-    void getEpicByIdTestStandard() throws ManagerSaveException { //Может ли тестовый метод выкидывать исключение
+    void getEpicByIdTestStandard() {
         manager.addItem(epic);
         int id = epic.getId();
         Epic expected = epic;
@@ -177,21 +183,21 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void getEpicByIdTestEmptyTasksList() { //ВОПРОС С ДАНЫМ МЕТОДОМ
+    void getEpicByIdTestEmptyTasksList() { //TODO изменить по аналогии с таском
         HashMap<Integer, Epic> actual = null;
         assertNull(actual, "Не совпадает");
 
     }
 
     @Test
-    void getEpicByIdTestWrongId() throws ManagerSaveException {
+    void getEpicByIdTestWrongId() {
         Epic actual = (Epic) manager.getEpicById(89);
         assertNull(actual, "Не совпадает");
 
     }
 
     @Test
-    void getSubtaskByIdTestStandard() throws ManagerSaveException { //Может ли тестовый метод выкидывать исключение
+    void getSubtaskByIdTestStandard() {
         manager.addItem(epic);
         subtask = new Subtask(
                 0,
@@ -210,14 +216,14 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void getSubtaskByIdTestEmptyTasksList() { //ВОПРОС С ДАНЫМ МЕТОДОМ
+    void getSubtaskByIdTestEmptyTasksList() { //TODO по аналогии с таском
         HashMap<Integer, Epic> actual = null;
         assertNull(actual, "Не совпадает");
 
     }
 
     @Test
-    void getSubtaskByIdTestWrongId() throws ManagerSaveException {
+    void getSubtaskByIdTestWrongId() {
         Task actual = manager.getSubtaskById(89);
         assertNull(actual, "Не совпадает");
 
@@ -425,19 +431,33 @@ public abstract class TaskManagerTest<T extends TaskManager> {
 
         assertEquals(expected, actual, "Не совпадает");
 
-
-
-
     }
 
+    @Test
+    void checkTaskTimeTest() {
+        manager.addItem(task);
+        Task task2 = new Task( LocalDateTime.of(2022, 10,9, 20, 00),
+                Duration.ofMinutes(15));
+        Task task3 = new Task( LocalDateTime.of(2022, 10,10, 20, 00),
+                Duration.ofMinutes(10));
+        Task task4 = new Task( LocalDateTime.of(2022, 10,10, 20, 05),
+                Duration.ofMinutes(15));
 
+        assertDoesNotThrow(() -> manager.addItem(task2));
+        assertThrows(NoTimeException.class, () -> manager.addItem(task3));
+        assertThrows(NoTimeException.class, () -> manager.addItem(task4));
 
+        HashMap <Integer, Task> expected = new HashMap<>() {
+            {
+                put(task.getId(), task);
+                put(task2.getId(), task2);
+            }
+        };
+        HashMap<Integer, Task> actual = manager.getTasks();
 
+        assertEquals(expected, actual, "Не совпадает");
 
-
-
-
-
+    }
 
 
 
