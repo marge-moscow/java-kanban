@@ -8,7 +8,6 @@ import model.Subtask;
 import model.Task;
 import model.TaskStatus;
 
-import java.io.IOException;
 import java.util.*;
 
 public class InMemoryTaskManager implements TaskManager {
@@ -19,7 +18,7 @@ public class InMemoryTaskManager implements TaskManager {
     public HashMap<Integer, Epic> epics = new HashMap<>();
     public HashMap<Integer, Subtask> subtasks = new HashMap<>();
 
-    private Comparator <Task> comparator = Comparator.comparing(Task::getStartTime);
+    private final Comparator <Task> comparator = Comparator.comparing(Task::getStartTime);
     public Set <Task> prioritizedSet = new TreeSet<>(comparator);
 
     public List<Task> taskListNoStartTime = new ArrayList<>();
@@ -116,7 +115,8 @@ public class InMemoryTaskManager implements TaskManager {
         if(task.getId() <= 0) {
             int id = generateId();
             task.setId(id);
-            if (!checkTaskStartAndEndTime(task)) {
+
+            if (checkTaskStartAndEndTime(task)) {
                 switch (task.getType()) {
                     case TASK:
                         tasks.put(id, task);
@@ -137,43 +137,73 @@ public class InMemoryTaskManager implements TaskManager {
                     default:
                         System.out.println("Добавьте тип задачи.");
                 }
+
+                if (checkTaskHasStartTime(task)){
+                    prioritizedSet.add(task);
+                } else {
+                    taskListNoStartTime.add(task);
+                }
+
             } else {
                 throw new NoTimeException("Измените время задачи");
             }
         } else {
             updateItem(task, task.getStatus());
         }
-
     }
-
 
     // 2.5. Обновление. Новая версия объекта с верным идентификатором передаётся в виде параметра.
     @Override
     public void updateItem(Task task, TaskStatus status) {
+        prioritizedSet.remove(task);
         task.setStatus(status);
-        switch (task.getType()) {
-            case TASK:
-                tasks.put(task.getId(), task);
-                break;
-            case EPIC:
-                epics.put(task.getId(), (Epic) task);
-                break;
-            case SUBTASK:
-                subtasks.put(task.getId(), (Subtask) task);
-                Subtask subtask = (Subtask) task;
-                for (int i = 0; i < epics.get(subtask.getEpicId()).getSubtasks().size(); i++){
-                    Subtask item = epics.get(subtask.getEpicId()).getSubtasks().get(i);
-                    if(task.getId() == item.getId()){
-                        epics.get(subtask.getEpicId()).getSubtasks().set(i, subtask);
+        if (checkTaskStartAndEndTime(task)) {
+            switch (task.getType()) {
+                case TASK:
+                    tasks.put(task.getId(), task);
+                    break;
+                case EPIC:
+                    epics.put(task.getId(), (Epic) task);
+                    break;
+                case SUBTASK:
+                    subtasks.put(task.getId(), (Subtask) task);
+                    Subtask subtask = (Subtask) task;
+                    for (int i = 0; i < epics.get(subtask.getEpicId()).getSubtasks().size(); i++) {
+                        Subtask item = epics.get(subtask.getEpicId()).getSubtasks().get(i);
+                        if (task.getId() == item.getId()) {
+                            epics.get(subtask.getEpicId()).getSubtasks().set(i, subtask);
+                        }
                     }
-                }
-                checkEpicStatus(subtask.getEpicId());
-                checkEpicStartTimeAndDuration(subtask.getEpicId());
-                break;
-            default:
-                System.out.println("Добавьте тип задачи.");
+                    checkEpicStatus(subtask.getEpicId());
+                    checkEpicStartTimeAndDuration(subtask.getEpicId());
+                    break;
+                default:
+                    System.out.println("Добавьте тип задачи.");
+            }
+        } else {
+        throw new NoTimeException("Измените время задачи");
         }
 
+        if (!checkTaskHasStartTime(task)){
+            taskListNoStartTime.clear();
+            for (Task item: tasks.values()) {
+                if (item.getStartTime() == null) {
+                    taskListNoStartTime.add(task);
+                }
+            }
+            for (Task item: epics.values()) {
+                if (item.getStartTime() == null) {
+                    taskListNoStartTime.add(task);
+                }
+            }
+            for (Task item: subtasks.values()) {
+                if (item.getStartTime() == null) {
+                    taskListNoStartTime.add(task);
+                }
+            }
+        } else {
+            prioritizedSet.add(task);
+        }
     }
 
     // 2.6. Удаление по идентификатору.
@@ -182,14 +212,13 @@ public class InMemoryTaskManager implements TaskManager {
         if (tasks.get(id) == null) {
             return;
         }
+        Task task = getTaskById(id);
+
         tasks.remove(id);
-        if (prioritizedSet.contains(id)){
-            prioritizedSet.remove(id);
-        }
-        if (taskListNoStartTime.contains(id)) {
-            taskListNoStartTime.remove(id);
-        }
         historyManager.remove(id);
+
+        prioritizedSet.remove(task);
+        taskListNoStartTime.remove(task);
 
     }
 
@@ -207,14 +236,10 @@ public class InMemoryTaskManager implements TaskManager {
             historyManager.remove(item.getId());
         }
 
-        if (prioritizedSet.contains(id)){
-            prioritizedSet.remove(id);
-        }
-        if (taskListNoStartTime.contains(id)) {
-            taskListNoStartTime.remove(id);
-        }
-
         historyManager.remove(id);
+
+        prioritizedSet.remove(epic);
+        taskListNoStartTime.remove(epic);
     }
 
     @Override
@@ -222,16 +247,13 @@ public class InMemoryTaskManager implements TaskManager {
         if (subtasks.get(id) == null) {
             return;
         }
+        Subtask subtask = (Subtask) getSubtaskById(id);
         epics.get(subtasks.get(id).getEpicId()).deleteSubtask(subtasks.get(id));
         subtasks.remove(id);
         historyManager.remove(id);
+        prioritizedSet.remove(subtask);
+        taskListNoStartTime.remove(subtask);
 
-        if (prioritizedSet.contains(id)){
-            prioritizedSet.remove(id);
-        }
-        if (taskListNoStartTime.contains(id)) {
-            taskListNoStartTime.remove(id);
-        }
     }
 
     // 3. Дополнительные методы:
@@ -273,13 +295,10 @@ public class InMemoryTaskManager implements TaskManager {
 
         if (statusNew  && statusDone) {
             epics.get(id).setStatus(TaskStatus.IN_PROGRESS);
-            return;
         } else if (!statusNew && statusDone) {
             epics.get(id).setStatus(TaskStatus.DONE);
-            return;
-        } else if (statusNew && !statusDone) {
+        } else if (statusNew) {
             epics.get(id).setStatus(TaskStatus.NEW);
-            return;
         }
     }
 
@@ -289,12 +308,15 @@ public class InMemoryTaskManager implements TaskManager {
         epics.get(id).getEndTime();
     }
 
+    private boolean checkTaskHasStartTime(Task task) {
+        return task.getStartTime() != null;
+    }
     private boolean checkTaskStartAndEndTime(Task newTask) {
         if (newTask.getStartTime() == null) {
             return true;
         }
         return prioritizedSet.stream()
-                .anyMatch(task ->
+                .noneMatch(task ->
                         ((newTask.getStartTime().isAfter(task.getStartTime()) || newTask.getStartTime().isEqual(task.getStartTime()))
                                 && (newTask.getStartTime().isBefore(task.getEndTime()) || newTask.getStartTime().isEqual(task.getEndTime())))
                                 ||
@@ -305,14 +327,6 @@ public class InMemoryTaskManager implements TaskManager {
     //5. Вывод списка задач в порядке приоритета
     @Override
     public List<Task> getPrioritizedTasks() {
-
-        for (Task task: tasks.values()) {
-            if (task.getStartTime() != null ? prioritizedSet.add(task) : taskListNoStartTime.add(task));
-        }
-
-        for (Task task: subtasks.values()) {
-            if (task.getStartTime() != null ? prioritizedSet.add(task) : taskListNoStartTime.add(task));
-        }
 
         List <Task> taskList = new ArrayList(prioritizedSet);
         taskList.addAll(taskListNoStartTime);

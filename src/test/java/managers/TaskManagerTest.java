@@ -7,7 +7,6 @@ import model.Task;
 import model.TaskStatus;
 import org.junit.jupiter.api.*;
 
-import java.lang.reflect.Executable;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -22,7 +21,6 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     T manager;
     protected Task task;
     protected Epic epic;
-    protected Subtask subtask;
 
     public abstract T getManager();
 
@@ -37,13 +35,20 @@ public abstract class TaskManagerTest<T extends TaskManager> {
                 Duration.ofMinutes(15)
         );
 
-        epic = new Epic();
+        epic = new Epic(0, "Epic1", "EpicDescription1");
 
     }
 
-    /*Subtask initSubtask(){
-
-    }*/ //TODO добавить отдельный метод для создания сабтаска
+    Subtask initSubtask(){
+        return new Subtask(
+                0,
+                "Subtask1",
+                "SubtaskDescription1",
+                LocalDateTime.of(2022,10,11,15,00),
+                Duration.ofMinutes(20),
+                epic.getId()
+        );
+    }
 
     //Стандартное поведение
     //Пустой список задач
@@ -90,14 +95,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     @Test
     void getSubtasksTestStandard() {
         manager.addItem(epic);
-        subtask = new Subtask(
-                0,
-                "Subtask1",
-                "SubtaskDescription1",
-                LocalDateTime.of(2022,10,11,15,00),
-                Duration.ofMinutes(20),
-                epic.getId()
-        );
+        Subtask subtask = initSubtask();
         manager.addItem(subtask);
         HashMap<Integer, Subtask> expected = new HashMap<>(){
             {
@@ -134,14 +132,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     @Test
     void deleteSubtasksTest() {
         manager.addItem(epic);
-        subtask = new Subtask(
-                0,
-                "Subtask1",
-                "SubtaskDescription1",
-                LocalDateTime.of(2022,10,11,15,00),
-                Duration.ofMinutes(20),
-                epic.getId()
-        );
+        Subtask subtask = initSubtask();
         manager.addItem(subtask);
         manager.deleteSubtasks();
         HashMap<Integer, Subtask> actual = null;
@@ -183,8 +174,8 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void getEpicByIdTestEmptyTasksList() { //TODO изменить по аналогии с таском
-        HashMap<Integer, Epic> actual = null;
+    void getEpicByIdTestEmptyTasksList() {
+        Epic actual = (Epic) manager.getEpicById(1);
         assertNull(actual, "Не совпадает");
 
     }
@@ -199,14 +190,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     @Test
     void getSubtaskByIdTestStandard() {
         manager.addItem(epic);
-        subtask = new Subtask(
-                0,
-                "Subtask1",
-                "SubtaskDescription1",
-                LocalDateTime.of(2022,10,11,15,00),
-                Duration.ofMinutes(20),
-                epic.getId()
-        );
+        Subtask subtask = initSubtask();
         manager.addItem(subtask);
         int id = subtask.getId();
         Task expected = subtask;
@@ -216,8 +200,8 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void getSubtaskByIdTestEmptyTasksList() { //TODO по аналогии с таском
-        HashMap<Integer, Epic> actual = null;
+    void getSubtaskByIdTestEmptyTasksList() {
+        Subtask actual = (Subtask) manager.getEpicById(1);
         assertNull(actual, "Не совпадает");
 
     }
@@ -244,26 +228,21 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     @Test
     void updateItemTest() {
         manager.addItem(task);
+        manager.addItem(epic);
+        Subtask subtask = initSubtask();
+        manager.addItem(subtask);
+
         manager.updateItem(task, TaskStatus.DONE);
+        manager.updateItem(epic, TaskStatus.DONE);
+
         TaskStatus expected = TaskStatus.DONE;
         TaskStatus actual = task.getStatus();
         assertEquals(expected, actual, "Не совпадает");
 
-        manager.addItem(epic);
-        manager.updateItem(epic, TaskStatus.DONE);
         TaskStatus expectedEpicStatus = TaskStatus.DONE;
         TaskStatus actualEpicStatus = epic.getStatus();
         assertEquals(expectedEpicStatus, actualEpicStatus, "Не совпадает");
 
-        subtask = new Subtask(
-                0,
-                "Subtask1",
-                "SubtaskDescription1",
-                LocalDateTime.of(2022,10,11,15,00),
-                Duration.ofMinutes(20),
-                epic.getId()
-        );
-        manager.addItem(subtask);
         manager.updateItem(subtask, TaskStatus.IN_PROGRESS);
         TaskStatus expectedSubtaskStatus = TaskStatus.IN_PROGRESS;
         TaskStatus actualSubtaskStatus = subtask.getStatus();
@@ -299,14 +278,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     @Test
     void deleteEpicByIdTestStandard() {
         manager.addItem(epic);
-        subtask = new Subtask(
-                0,
-                "Subtask1",
-                "SubtaskDescription1",
-                LocalDateTime.of(2022,10,11,15,00),
-                Duration.ofMinutes(20),
-                epic.getId()
-        );
+        Subtask subtask = initSubtask();
         manager.addItem(subtask);
         manager.deleteEpicById(epic.getId());
         HashMap<Integer, Epic> expected = new HashMap<>();
@@ -334,14 +306,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     @Test
     void deleteSubtaskByIdTestStandard() {
         manager.addItem(epic);
-        subtask = new Subtask(
-                0,
-                "Subtask1",
-                "SubtaskDescription1",
-                LocalDateTime.of(2022,10,11,15,00),
-                Duration.ofMinutes(20),
-                epic.getId()
-        );
+        Subtask subtask = initSubtask();
         manager.addItem(subtask);
         manager.deleteSubtaskById(subtask.getId());
         HashMap<Integer, Subtask> expected = new HashMap<>();
@@ -352,14 +317,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     @Test
     void deleteSubtaskByIdTestWrongId() {
         manager.addItem(epic);
-        subtask = new Subtask(
-                0,
-                "Subtask1",
-                "SubtaskDescription1",
-                LocalDateTime.of(2022,10,11,15,00),
-                Duration.ofMinutes(20),
-                epic.getId()
-        );
+        Subtask subtask = initSubtask();
         manager.addItem(subtask);
         manager.deleteSubtaskById(89);
         HashMap<Integer, Subtask> expected = new HashMap<>();
@@ -372,14 +330,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     @Test
     void getSubtasksByEpicTestStandard() {
         manager.addItem(epic);
-        subtask = new Subtask(
-                0,
-                "Subtask1",
-                "SubtaskDescription1",
-                LocalDateTime.of(2022,10,11,15,00),
-                Duration.ofMinutes(20),
-                epic.getId()
-        );
+        Subtask subtask = initSubtask();
         manager.addItem(subtask);
 
         List<Subtask> expected = new ArrayList<>();
@@ -393,14 +344,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     @Test
     void getSubtasksByEpicTestWrongId() {
         manager.addItem(epic);
-        subtask = new Subtask(
-                0,
-                "Subtask1",
-                "SubtaskDescription1",
-                LocalDateTime.of(2022,10,11,15,00),
-                Duration.ofMinutes(20),
-                epic.getId()
-        );
+        Subtask subtask = initSubtask();
         manager.addItem(subtask);
 
         List<Subtask> expected = new ArrayList<>();
@@ -413,19 +357,13 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     void getPrioritizedTasksTest() {
         manager.addItem(task);
         manager.addItem(epic);
-        subtask = new Subtask(
-                0,
-                "Subtask1",
-                "SubtaskDescription1",
-                LocalDateTime.of(2022,10,11,15,00),
-                Duration.ofMinutes(20),
-                epic.getId()
-        );
+        Subtask subtask = initSubtask();
         manager.addItem(subtask);
 
         List<Task> expected = new ArrayList<>();
         expected.add(task);
         expected.add(subtask);
+        expected.add(epic);
 
         List<Task> actual = manager.getPrioritizedTasks();
 
@@ -436,7 +374,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     @Test
     void checkTaskTimeTest() {
         manager.addItem(task);
-        Task task2 = new Task( LocalDateTime.of(2022, 10,9, 20, 00),
+        Task task2 = new Task(0, "task2", "description2", LocalDateTime.of(2022, 10,9, 20, 00),
                 Duration.ofMinutes(15));
         Task task3 = new Task( LocalDateTime.of(2022, 10,10, 20, 00),
                 Duration.ofMinutes(10));

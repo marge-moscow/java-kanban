@@ -60,8 +60,6 @@ public class Epic extends Task {
         return maxOptional.orElse(null);
     }
 
-    //.map(Subtask::getEndTime)
-
     @Override
     public Duration getDuration() {
         return duration;

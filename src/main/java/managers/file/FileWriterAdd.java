@@ -7,7 +7,6 @@ import model.Task;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.time.LocalDateTime;
 
 public class FileWriterAdd {
 
@@ -23,11 +22,6 @@ public class FileWriterAdd {
     public static String toString(Task task){
         int id = task.getId();
         String line;
-
-        //Почему не работает
-        /*String startTime;
-        if (task.getStartTime() == null ? startTime = "no StratTime" : startTime = String.join(",", task.getEndTime().toString()));*/
-
 
         if (task.getType() == TaskType.SUBTASK) {
             Subtask subtask = (Subtask) task;
@@ -69,14 +63,12 @@ public class FileWriterAdd {
         return line;
     }
 
-
     static String historyToString(HistoryManager manager) {
         StringBuilder sb = new StringBuilder();
         for (Task task : manager.getHistory()) {
             sb.append(task.getId()).append(",");
         }
         return sb.toString();
-
     }
 
 }
