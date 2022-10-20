@@ -1,5 +1,6 @@
 package managers.file;
 
+import exceptions.NoTimeException;
 import model.TaskStatus;
 import managers.Managers;
 import managers.TaskManager;
@@ -9,6 +10,8 @@ import model.Subtask;
 import model.Task;
 
 import java.io.*;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 
@@ -30,11 +33,25 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
 
         taskManager.addItem(epic1);
 
+        Task task1 = new Task(
+                0,
+                "Task1",
+                "Task1Description",
+                LocalDateTime.of(2022,10,07,23,00),
+                Duration.ofMinutes(15)
+        );
+        taskManager.addItem(task1);
+        taskManager.addItem(task1);
+        taskManager.addItem(task1);
+        taskManager.addItem(task1);
+
+        taskManager.updateItem(task1, TaskStatus.DONE);
+
         taskManager.updateItem(epic1, TaskStatus.DONE);
 
         taskManager.getEpics();
 
-        System.out.println(taskManager.getPrioritizedTasks());
+        //System.out.println(taskManager.getPrioritizedTasks());
 
 
        FileBackedTasksManager fileBackedTasksManager = FileBackedTasksManager.loadFromFile(new File("managers.file.csv"));
@@ -51,11 +68,12 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
        fileBackedTasksManager.getSubtaskById(2);
        fileBackedTasksManager.getSubtaskById(6);
 
+        System.out.println(fileBackedTasksManager.getPrioritizedTasks());
+
     }
 
     public void save() {
-        try {
-            Writer fileWriter = new FileWriter("managers.file.csv");
+        try (Writer fileWriter = new FileWriter("managers.file.csv")) {
             fileWriter.write("id,type,name,status,description,startTime,duration,endTime,epicId\n");
             for (Integer id: tasks.keySet()) {
                 fileWriter.write(FileWriterAdd.toString(tasks.get(id)));
@@ -72,11 +90,10 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
 
             fileWriter.append("\n");
             fileWriter.write(FileWriterAdd.historyToString(historyManager));
-            fileWriter.close();
+
 
         } catch (IOException e) {
-            System.out.println(e.getMessage());
-
+            throw new NoTimeException("Ничего не получилось.");
         }
     }
 

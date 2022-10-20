@@ -9,10 +9,6 @@ import java.util.Optional;
 public class Epic extends Task {
     protected ArrayList<Subtask> subtasks = new ArrayList<>();
 
-    protected Duration duration;
-    protected LocalDateTime startTime;
-    protected LocalDateTime endTime;
-
     public Epic(int id, String name, String description) {
         super(id, name, description);
         setType(TaskType.EPIC);

@@ -10,6 +10,10 @@ import java.nio.file.Path;
 
 public class FileWriterAdd {
 
+    static final String START_TIME = "STARTTIME";
+    static final String DURATION = "DURATION";
+    static final String END_TIME = "ENDTIME";
+
     public static void createFile() {
         Path path = Path.of("managers.file.csv");
         try {
@@ -25,41 +29,36 @@ public class FileWriterAdd {
 
         if (task.getType() == TaskType.SUBTASK) {
             Subtask subtask = (Subtask) task;
-            line = String.join(",", Integer.toString(id), subtask.getType().toString(), subtask.getName(), subtask.getStatus().toString(), subtask.getDescription(),  checkStartTime(subtask), checkDuration(subtask), checkEndTime(subtask), Integer.toString(subtask.getEpicId()));
+            line = String.join(",", Integer.toString(id), subtask.getType().toString(), subtask.getName(), subtask.getStatus().toString(), subtask.getDescription(),  checkTime(subtask, START_TIME), checkTime(subtask, DURATION), checkTime(subtask, END_TIME), Integer.toString(subtask.getEpicId()));
         } else {
-            line = String.join(",", Integer.toString(id), task.getType().toString(), task.getName(), task.getStatus().toString(), task.getDescription(), checkStartTime(task), checkDuration(task), checkEndTime(task));
+            line = String.join(",", Integer.toString(id), task.getType().toString(), task.getName(), task.getStatus().toString(), task.getDescription(), checkTime(task, START_TIME), checkTime(task, DURATION), checkTime(task, END_TIME));
         }
 
         return line;
     }
 
-    public static String checkStartTime(Task task) {
-        String line;
-        if (task.getStartTime() == null) {
-            line = "no StartTime";
-        } else {
-           line = task.getStartTime().toString();
+    public static String checkTime(Task task, String item) {
+        String line = "no data";
+        switch (item) {
+            case "STARTTIME":
+                if(task.getStartTime() != null) {
+                    line = task.getStartTime().toString();
+                }
+                break;
+            case "DURATION":
+                if(task.getDuration() != null) {
+                    line = task.getDuration().toString();
+                }
+                break;
+            case "ENDTIME":
+                if(task.getEndTime() != null) {
+                    line = task.getEndTime().toString();
+                }
+                break;
+            default:
+                line = "no data";
         }
-        return line;
-    }
 
-    private static String checkEndTime(Task task) {
-        String line;
-        if (task.getEndTime() == null) {
-            line = "no EndTime";
-        } else {
-            line = task.getEndTime().toString();
-        }
-        return line;
-    }
-
-    private static String checkDuration(Task task) {
-        String line;
-        if (task.getDuration() == null) {
-            line = "no Duration";
-        } else {
-            line = task.getDuration().toString();
-        }
         return line;
     }
 

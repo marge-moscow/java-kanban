@@ -23,18 +23,6 @@ public class Node <Task>{
         return next;
     }
 
-    public void setNext(Node<Task> next) {
-        this.next = next;
-    }
-
-    public Node<Task> getPrev() {
-        return prev;
-    }
-
-    public void setPrev(Node<Task> prev) {
-        this.prev = prev;
-    }
-
     @Override
     public String toString() {
         return "Node{" +

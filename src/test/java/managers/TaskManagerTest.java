@@ -56,6 +56,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     void getTasksTestStandard() {
+
         manager.addItem(task);
         HashMap<Integer, Task> expected = new HashMap<>(){
             {
@@ -117,16 +118,18 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     void deleteTasksTest() {
         manager.addItem(task);
         manager.deleteTasks();
-        HashMap<Integer, Task> actual = null;
-        assertNull(actual, "Не совпадает");
+        HashMap<Integer, Task> expected = new HashMap<>();
+        HashMap<Integer, Task> actual = manager.getTasks();
+        assertEquals(expected, actual, "Не совпадает");
     }
 
     @Test
     void deleteEpicsTest() {
         manager.addItem(epic);
         manager.deleteEpics();
-        HashMap<Integer, Epic> actual = null;
-        assertNull(actual, "Не совпадает");
+        HashMap<Integer, Epic> expected = new HashMap<>();
+        HashMap<Integer, Epic> actual = manager.getEpics();
+        assertEquals(expected, actual, "Не совпадает");
     }
 
     @Test
@@ -135,8 +138,9 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         Subtask subtask = initSubtask();
         manager.addItem(subtask);
         manager.deleteSubtasks();
-        HashMap<Integer, Subtask> actual = null;
-        assertNull(actual, "Не совпадает");
+        HashMap<Integer, Epic> expected = new HashMap<>();
+        HashMap<Integer, Subtask> actual = manager.getSubtasks();
+        assertEquals(expected, actual, "Не совпадает");
     }
 
     @Test

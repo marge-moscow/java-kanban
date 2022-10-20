@@ -1,5 +1,6 @@
 package managers.memoryManager;
 
+import exceptions.NoTaskException;
 import exceptions.NoTimeException;
 import managers.TaskManager;
 import managers.history.InMemoryHistoryManager;
@@ -8,7 +9,9 @@ import model.Subtask;
 import model.Task;
 import model.TaskStatus;
 
+import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class InMemoryTaskManager implements TaskManager {
     protected static InMemoryHistoryManager historyManager = new InMemoryHistoryManager();
@@ -36,6 +39,7 @@ public class InMemoryTaskManager implements TaskManager {
     public HashMap<Integer, Task> getTasks() {
         addTaskToHistory(tasks);
         return tasks;
+
     }
 
     @Override
@@ -155,9 +159,15 @@ public class InMemoryTaskManager implements TaskManager {
     // 2.5. Обновление. Новая версия объекта с верным идентификатором передаётся в виде параметра.
     @Override
     public void updateItem(Task task, TaskStatus status) {
-        prioritizedSet.remove(task);
+        if (!checkTaskStartAndEndTime(task)) {
+            prioritizedSet = prioritizedSet
+                    .stream()
+                    .filter(item -> item.getId() != task.getId())
+                    .collect(Collectors.toSet());
+        }
         task.setStatus(status);
         if (checkTaskStartAndEndTime(task)) {
+
             switch (task.getType()) {
                 case TASK:
                     tasks.put(task.getId(), task);
@@ -185,22 +195,11 @@ public class InMemoryTaskManager implements TaskManager {
         }
 
         if (!checkTaskHasStartTime(task)){
-            taskListNoStartTime.clear();
-            for (Task item: tasks.values()) {
-                if (item.getStartTime() == null) {
-                    taskListNoStartTime.add(task);
-                }
-            }
-            for (Task item: epics.values()) {
-                if (item.getStartTime() == null) {
-                    taskListNoStartTime.add(task);
-                }
-            }
-            for (Task item: subtasks.values()) {
-                if (item.getStartTime() == null) {
-                    taskListNoStartTime.add(task);
-                }
-            }
+            taskListNoStartTime = taskListNoStartTime
+                    .stream()
+                    .filter(item -> item.getId() != task.getId())
+                    .collect(Collectors.toList());
+            taskListNoStartTime.add(task);
         } else {
             prioritizedSet.add(task);
         }
@@ -273,7 +272,7 @@ public class InMemoryTaskManager implements TaskManager {
         boolean statusDone = false;
         boolean statusNew = false;
 
-        if (epics.get(id).getSubtasks() == null || epics.get(id).getSubtasks().size() == 0) {
+        if (epics.get(id).getSubtasks() == null || epics.get(id).getSubtasks().isEmpty()) {
             epics.get(id).setStatus(TaskStatus.NEW);
             return;
         }
@@ -336,7 +335,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     //Специально созданный метод для красивого вывода истории (бед детальной информации)
-    public List<String> getHistory(){
+    public List<String> getHistory() {
         List<String> prettyPrintHistoryList = new ArrayList<>();
         for (Task task: historyManager.getHistory()) {
             String text;

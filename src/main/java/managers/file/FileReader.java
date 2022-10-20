@@ -1,12 +1,12 @@
 package managers.file;
 
+import exceptions.UnreadableFileException;
 import model.TaskType;
 import model.Epic;
 import model.Subtask;
 import model.Task;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.time.Duration;
@@ -16,11 +16,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FileReader {
-    public static String readFileContentsOrNull(File file) throws Exception {
+    public static String readFileContentsOrNull(File file) throws IOException {
         try {
             return Files.readString(file.toPath());
         } catch (IOException e) {
-            throw new FileNotFoundException("Невозможно прочитать файл.");
+            throw new UnreadableFileException("Невозможно прочитать файл.");
         }
     }
 
