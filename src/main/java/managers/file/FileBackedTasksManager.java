@@ -1,5 +1,7 @@
 package managers.file;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import exceptions.NoTimeException;
 import model.TaskStatus;
 import managers.Managers;
@@ -10,6 +12,9 @@ import model.Subtask;
 import model.Task;
 
 import java.io.*;
+import java.lang.reflect.Type;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -17,59 +22,62 @@ import java.util.List;
 import java.util.Map;
 
 public class FileBackedTasksManager extends InMemoryTaskManager implements TaskManager {
+    private static final String TASKS_FILENAME = "tasks.json";
+    private static final String EPIC_FILENAME = "epics.json";
+    private static final String SUBTASKS_FILENAME = "subtasks.json";
     protected static List <Integer> history;
 
+    public FileBackedTasksManager () {
+
+        //написать метод load
+        tasks = loadTasks();
+    }
+
+    Gson gson = new Gson();
 
     public static void main(String[] args) throws Exception {
 
         TaskManager taskManager = Managers.getFileBackedTasksManager();
 
-        FileWriterAdd.createFile();
+        Task task = new Task(0, "task1", "task1description");
 
-        Epic epic1 = new Epic(
-                0,
-                "Навести порядок в кладовке.",
-                "Разобрать все вещи и организовать систему хранения."
-        );
+        taskManager.addTask(task);
 
-        taskManager.addEpic(epic1);
+        task.setStartTime(LocalDateTime.of(2022,10,26,20,0));
 
-        Task task1 = new Task(
-                0,
-                "Task1",
-                "Task1Description",
-                LocalDateTime.of(2022,10,07,23,00),
-                Duration.ofMinutes(15)
-        );
-        taskManager.addTask(task1);
-        taskManager.addTask(task1);
-        taskManager.addTask(task1);
-        taskManager.addTask(task1);
+        taskManager.updateTask(task);
 
-        taskManager.updateItem(task1, TaskStatus.DONE);
+        task.setDuration(Duration.ofMinutes(20));
 
-        taskManager.updateItem(epic1, TaskStatus.DONE);
+        taskManager.updateTask(task);
 
-        taskManager.getEpics();
+        TaskManager taskManager2 = Managers.getFileBackedTasksManager();
 
-        //System.out.println(taskManager.getPrioritizedTasks());
+        System.out.println(taskManager2.getTasks());
 
 
-       FileBackedTasksManager fileBackedTasksManager = FileBackedTasksManager.loadFromFile(new File("managers.file.csv"));
-       fileBackedTasksManager.getEpics();
 
-       Subtask subtask4 = new Subtask(
-                0,
-                "Кукареку",
-                "Ку-ку",
-                epic1.getId()
-       );
 
-       fileBackedTasksManager.addSubtask(subtask4);
-       fileBackedTasksManager.getSubtaskById(2);
-       fileBackedTasksManager.getSubtaskById(6);
+    }
 
-        System.out.println(fileBackedTasksManager.getPrioritizedTasks());
+    //TODO вынести все save в FileWriter
+    public void saveMapToJson (Map<Integer, ? extends Task> map, String fileName) {
+        try {
+            if (!Files.exists(Path.of(fileName))) {
+                Files.createFile(Path.of(fileName));
+            }
+
+            try (Writer fileWriter = new FileWriter(fileName)) {
+
+                String jsonMap = gson.toJson(map);
+                fileWriter.write(jsonMap);
+
+            }
+
+        } catch (IOException e) {
+            throw new RuntimeException("Не получилось записать задачу.");
+        }
+
 
     }
 
@@ -77,20 +85,20 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
         try (Writer fileWriter = new FileWriter("managers.file.csv")) {
             fileWriter.write("id,type,name,status,description,startTime,duration,endTime,epicId\n");
             for (Integer id: tasks.keySet()) {
-                fileWriter.write(FileWriterAdd.toString(tasks.get(id)));
+                fileWriter.write(TaskSaver.toString(tasks.get(id)));
                 fileWriter.append("\n");
             }
             for (Integer id: epics.keySet()) {
-                fileWriter.write(FileWriterAdd.toString(epics.get(id)));
+                fileWriter.write(TaskSaver.toString(epics.get(id)));
                 fileWriter.append("\n");
             }
             for (Integer id: subtasks.keySet()) {
-                fileWriter.write(FileWriterAdd.toString(subtasks.get(id)));
+                fileWriter.write(TaskSaver.toString(subtasks.get(id)));
                 fileWriter.append("\n");
             }
 
             fileWriter.append("\n");
-            fileWriter.write(FileWriterAdd.historyToString(historyManager));
+            fileWriter.write(TaskSaver.historyToString(historyManager));
 
 
         } catch (IOException e) {
@@ -99,52 +107,15 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
     }
 
     public void saveTask() {
-        try (Writer fileWriter = new FileWriter("managers.file.csv")) {
-            fileWriter.write("id,type,name,status,description,startTime,duration,endTime,epicId\n");
-            for (Integer id: tasks.keySet()) {
-                fileWriter.write(FileWriterAdd.toString(tasks.get(id)));
-                fileWriter.append("\n");
-            }
-            for (Integer id: epics.keySet()) {
-                fileWriter.write(FileWriterAdd.toString(epics.get(id)));
-                fileWriter.append("\n");
-            }
-            for (Integer id: subtasks.keySet()) {
-                fileWriter.write(FileWriterAdd.toString(subtasks.get(id)));
-                fileWriter.append("\n");
-            }
-
-            fileWriter.append("\n");
-            fileWriter.write(FileWriterAdd.historyToString(historyManager));
-
-
-        } catch (IOException e) {
-            throw new NoTimeException("Ничего не получилось.");
-        }
+        saveMapToJson(tasks, TASKS_FILENAME);
     }
 
     public void saveEpic() {
-        try (Writer fileWriter = new FileWriter("managers.file.csv")) {
-            fileWriter.write("id,type,name,status,description,startTime,duration,endTime,epicId\n");
-            for (Integer id: tasks.keySet()) {
-                fileWriter.write(FileWriterAdd.toString(tasks.get(id)));
-                fileWriter.append("\n");
-            }
-            for (Integer id: epics.keySet()) {
-                fileWriter.write(FileWriterAdd.toString(epics.get(id)));
-                fileWriter.append("\n");
-            }
-            for (Integer id: subtasks.keySet()) {
-                fileWriter.write(FileWriterAdd.toString(subtasks.get(id)));
-                fileWriter.append("\n");
-            }
-
-            fileWriter.append("\n");
-            fileWriter.write(FileWriterAdd.historyToString(historyManager));
-
-
+        try (Writer fileWriter = new FileWriter(TASKS_FILENAME)) {
+            String jsonTasks = gson.toJson(tasks);
+            fileWriter.write(jsonTasks);
         } catch (IOException e) {
-            throw new NoTimeException("Ничего не получилось.");
+            throw new RuntimeException("Не получилось записать задачу.");
         }
     }
 
@@ -152,20 +123,20 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
         try (Writer fileWriter = new FileWriter("managers.file.csv")) {
             fileWriter.write("id,type,name,status,description,startTime,duration,endTime,epicId\n");
             for (Integer id: tasks.keySet()) {
-                fileWriter.write(FileWriterAdd.toString(tasks.get(id)));
+                fileWriter.write(TaskSaver.toString(tasks.get(id)));
                 fileWriter.append("\n");
             }
             for (Integer id: epics.keySet()) {
-                fileWriter.write(FileWriterAdd.toString(epics.get(id)));
+                fileWriter.write(TaskSaver.toString(epics.get(id)));
                 fileWriter.append("\n");
             }
             for (Integer id: subtasks.keySet()) {
-                fileWriter.write(FileWriterAdd.toString(subtasks.get(id)));
+                fileWriter.write(TaskSaver.toString(subtasks.get(id)));
                 fileWriter.append("\n");
             }
 
             fileWriter.append("\n");
-            fileWriter.write(FileWriterAdd.historyToString(historyManager));
+            fileWriter.write(TaskSaver.historyToString(historyManager));
 
 
         } catch (IOException e) {
@@ -177,17 +148,17 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
 
         FileBackedTasksManager tasksManager = Managers.getFileBackedTasksManager();
 
-        String content = FileReader.readFileContentsOrNull(file);
+        String content = TaskLoader.readFileContentsOrNull(file);
         String[] lines = content.split("\n");
         int startId = 0;
         for (int i = 1; i < lines.length; i++) {
             String line = lines[i];
             if (line.isEmpty()) {
-                history = FileReader.historyFromString(lines[i + 1]);
+                history = TaskLoader.historyFromString(lines[i + 1]);
                 break;
             }
 
-            Task task = FileReader.fromString(line);
+            Task task = TaskLoader.fromString(line);
             int id = task.getId();
             if (id > startId) {
                 startId = id;
@@ -198,6 +169,27 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
 
         tasksManager.startId = startId;
         return tasksManager;
+    }
+
+    public Map<Integer, Task>  loadTasks() {
+        return (Map<Integer, Task>) loadMap(TASKS_FILENAME);
+    }
+    public Map<Integer, ? extends Task> loadMap(String fileName) {
+        try {
+            if (!Files.exists(Path.of(fileName))) {
+                return new HashMap<>();
+            }
+
+            try (Reader fileReader = new FileReader(fileName)) {
+                Type type = new TypeToken<Map<Integer, ? extends Task>>(){}.getType();
+                return gson.fromJson(fileReader, type);
+
+            }
+
+        } catch (IOException e) {
+            throw new RuntimeException("Не получилось записать задачу.");
+        }
+
     }
 
     @Override
@@ -221,10 +213,12 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
         return hashMap;
     }
 
+
+    //TODO Во всех методах удаления исправить save на новый в соответствии с задачей
     @Override
     public void deleteTasks() {
         super.deleteTasks();
-        save();
+        saveTask();
     }
 
     @Override
@@ -269,7 +263,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
     @Override
     public void addTask(Task task) {
         super.addTask(task);
-        save();
+        saveTask();
     }
 
     @Override
@@ -293,7 +287,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
     @Override
     public void updateTask(Task task) {
         super.updateTask(task);
-        save();
+        saveTask();
     }
     @Override
     public void updateEpic(Epic epic) {

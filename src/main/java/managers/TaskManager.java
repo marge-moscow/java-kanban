@@ -43,7 +43,6 @@ public interface TaskManager {
 
 
     // 2.5. Обновление. Новая версия объекта с верным идентификатором передаётся в виде параметра.
-    void updateItem(Task task, TaskStatus status);
 
     void updateTask(Task task);
     void updateSubtask(Subtask subtask);

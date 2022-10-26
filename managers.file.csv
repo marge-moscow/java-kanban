@@ -1,6 +1,4 @@
 id,type,name,status,description,startTime,duration,endTime,epicId
-2,TASK,Task1,NEW,Task1Description,2022-10-07T23:00,PT15M,2022-10-07T23:15
-1,EPIC,Навести порядок в кладовке.,NEW,Разобрать все вещи и организовать систему хранения.,no data,PT0S,no data
-3,SUBTASK,Кукареку,NEW,Ку-ку,no data,no data,no data,1
+1,TASK,task1,NEW,task1description,2022-10-26T20:00,PT20M,2022-10-26T20:20
 
 1,

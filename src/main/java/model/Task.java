@@ -60,19 +60,21 @@ public class Task {
 
     public void setDuration(Duration duration) {
         this.duration = duration;
+        this.endTime = calculateEndTime();
     }
 
     public void setStartTime(LocalDateTime startTime) {
         this.startTime = startTime;
+        this.endTime = calculateEndTime();
     }
 
     public LocalDateTime getEndTime() {
-        LocalDateTime endTime = null;
-        if (startTime != null) {
-            endTime = startTime.plus(duration);
-        }
+        return calculateEndTime();
+    }
 
-        return endTime;
+    public LocalDateTime calculateEndTime () {
+        return startTime != null && duration != null ? startTime.plus(duration) : null;
+
     }
 
 

@@ -15,7 +15,7 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FileReader {
+public class TaskLoader {
     public static String readFileContentsOrNull(File file) throws IOException {
         try {
             return Files.readString(file.toPath());

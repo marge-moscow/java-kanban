@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-public class FileWriterAdd {
+public class TaskSaver {
 
     static final String START_TIME = "STARTTIME";
     static final String DURATION = "DURATION";

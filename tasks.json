@@ -1,0 +1,1 @@
+{"1":{"id":1,"name":"task1","description":"task1description","status":"NEW","type":"TASK","duration":{"seconds":1200,"nanos":0},"startTime":{"date":{"year":2022,"month":10,"day":26},"time":{"hour":20,"minute":0,"second":0,"nano":0}},"endTime":{"date":{"year":2022,"month":10,"day":26},"time":{"hour":20,"minute":20,"second":0,"nano":0}}}}
