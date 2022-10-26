@@ -5,9 +5,9 @@ import model.TaskStatus;
 import model.Subtask;
 import model.Task;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public interface TaskManager {
@@ -16,11 +16,11 @@ public interface TaskManager {
 
     // 2.Методы для каждого из типа задач(Задача/Эпик/Подзадача):
     // 2.1.Получение списка всех задач.
-    HashMap<Integer, Task> getTasks();
+    Map<Integer, Task> getTasks();
 
-    HashMap<Integer, Epic> getEpics();
+    Map<Integer, Epic> getEpics();
 
-    HashMap<Integer, Subtask> getSubtasks();
+    Map<Integer, Subtask> getSubtasks();
 
     // 2.2.Удаление всех задач.
     void deleteTasks();
@@ -35,10 +35,20 @@ public interface TaskManager {
     Task getSubtaskById(int id);
 
     // 2.4.Создание. Сам объект должен передаваться в качестве параметра.
-    void addItem(Task task);
+    //void addItem(Task task);
+
+    void addTask(Task task);
+    void addEpic(Epic epic);
+    void addSubtask(Subtask subtask);
+
 
     // 2.5. Обновление. Новая версия объекта с верным идентификатором передаётся в виде параметра.
     void updateItem(Task task, TaskStatus status);
+
+    void updateTask(Task task);
+    void updateSubtask(Subtask subtask);
+    void updateEpic(Epic epic);
+
 
 
     // 2.6. Удаление по идентификатору.

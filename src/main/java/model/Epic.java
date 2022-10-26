@@ -3,11 +3,12 @@ package model;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
 public class Epic extends Task {
-    protected ArrayList<Subtask> subtasks = new ArrayList<>();
+    protected List<Subtask> subtasks = new ArrayList<>();
 
     public Epic(int id, String name, String description) {
         super(id, name, description);
@@ -72,7 +73,7 @@ public class Epic extends Task {
     public void deleteSubtask(Subtask subtask){
         subtasks.remove(subtask);
     }
-    public ArrayList<Subtask> getSubtasks() {
+    public List<Subtask> getSubtasks() {
         return subtasks;
     }
 
@@ -91,4 +92,7 @@ public class Epic extends Task {
         return super.toString() + "\n  Подзадачи:\n" + subtasks;
     }
 
+    public void setSubtasks(List<Subtask> subtasks) {
+        this.subtasks = subtasks;
+    }
 }

@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public abstract class TaskManagerTest<T extends TaskManager> {
 
-    T manager;
+   /* T manager;
     protected Task task;
     protected Epic epic;
 
@@ -63,14 +63,14 @@ public abstract class TaskManagerTest<T extends TaskManager> {
                 put(task.getId(), task);
             }
         };
-        HashMap<Integer, Task> actual = manager.getTasks();
+        Map<Integer, Task> actual = manager.getTasks();
         assertEquals(expected, actual, "Не совпадает");
     }
 
     @Test
     void getTasksTestEmptyTasksList() {
-        HashMap<Integer, Task> expected = new HashMap<>();
-        HashMap<Integer, Task> actual = manager.getTasks();
+        Map<Integer, Task> expected = new HashMap<>();
+        Map<Integer, Task> actual = manager.getTasks();
         assertEquals(expected, actual, "Не совпадает");
     }
 
@@ -82,14 +82,14 @@ public abstract class TaskManagerTest<T extends TaskManager> {
                 put(epic.getId(), epic);
             }
         };
-        HashMap<Integer, Epic> actual = manager.getEpics();
+        Map<Integer, Epic> actual = manager.getEpics();
         assertEquals(expected, actual, "Не совпадает");
     }
 
     @Test
     void getEpicsTestEmptyTasksList() {
-        HashMap<Integer, Epic> expected = new HashMap<>();
-        HashMap<Integer, Epic> actual = manager.getEpics();
+        Map<Integer, Epic> expected = new HashMap<>();
+        Map<Integer, Epic> actual = manager.getEpics();
         assertEquals(expected, actual, "Не совпадает");
     }
 
@@ -98,19 +98,19 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         manager.addItem(epic);
         Subtask subtask = initSubtask();
         manager.addItem(subtask);
-        HashMap<Integer, Subtask> expected = new HashMap<>(){
+        Map<Integer, Subtask> expected = new HashMap<>(){
             {
                 put(subtask.getId(), subtask);
             }
         };
-        HashMap<Integer, Subtask> actual = manager.getSubtasks();
+        Map<Integer, Subtask> actual = manager.getSubtasks();
         assertEquals(expected, actual, "Не совпадает");
     }
 
     @Test
     void getSubtasksTestEmptyTasksList() {
-        HashMap<Integer, Subtask> expected = new HashMap<>();
-        HashMap<Integer, Subtask> actual = manager.getSubtasks();
+        Map<Integer, Subtask> expected = new HashMap<>();
+        Map<Integer, Subtask> actual = manager.getSubtasks();
         assertEquals(expected, actual, "Не совпадает");
     }
 
@@ -118,8 +118,8 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     void deleteTasksTest() {
         manager.addItem(task);
         manager.deleteTasks();
-        HashMap<Integer, Task> expected = new HashMap<>();
-        HashMap<Integer, Task> actual = manager.getTasks();
+        Map<Integer, Task> expected = new HashMap<>();
+        Map<Integer, Task> actual = manager.getTasks();
         assertEquals(expected, actual, "Не совпадает");
     }
 
@@ -127,8 +127,8 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     void deleteEpicsTest() {
         manager.addItem(epic);
         manager.deleteEpics();
-        HashMap<Integer, Epic> expected = new HashMap<>();
-        HashMap<Integer, Epic> actual = manager.getEpics();
+        Map<Integer, Epic> expected = new HashMap<>();
+        Map<Integer, Epic> actual = manager.getEpics();
         assertEquals(expected, actual, "Не совпадает");
     }
 
@@ -138,8 +138,8 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         Subtask subtask = initSubtask();
         manager.addItem(subtask);
         manager.deleteSubtasks();
-        HashMap<Integer, Epic> expected = new HashMap<>();
-        HashMap<Integer, Subtask> actual = manager.getSubtasks();
+        Map<Integer, Epic> expected = new HashMap<>();
+        Map<Integer, Subtask> actual = manager.getSubtasks();
         assertEquals(expected, actual, "Не совпадает");
     }
 
@@ -262,8 +262,8 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     void deleteTaskByIdTestStandard() {
         manager.addItem(task);
         manager.deleteTaskById(task.getId());
-        HashMap<Integer, Task> expected = new HashMap<>();
-        HashMap<Integer, Task> actual = manager.getTasks();
+        Map<Integer, Task> expected = new HashMap<>();
+        Map<Integer, Task> actual = manager.getTasks();
         assertEquals(expected, actual, "Не совпадает");
 
     }
@@ -272,9 +272,9 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     void deleteTaskByIdTestWrongId() {
         manager.addItem(task);
         manager.deleteTaskById(89);
-        HashMap<Integer, Task> expected = new HashMap<>();
+        Map<Integer, Task> expected = new HashMap<>();
         expected.put(task.getId(), task);
-        HashMap<Integer, Task> actual = manager.getTasks();
+        Map<Integer, Task> actual = manager.getTasks();
         assertEquals(expected, actual, "Не совпадает");
 
     }
@@ -285,11 +285,11 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         Subtask subtask = initSubtask();
         manager.addItem(subtask);
         manager.deleteEpicById(epic.getId());
-        HashMap<Integer, Epic> expected = new HashMap<>();
-        HashMap<Integer, Epic> actual = manager.getEpics();
+        Map<Integer, Epic> expected = new HashMap<>();
+        Map<Integer, Epic> actual = manager.getEpics();
 
-        HashMap<Integer, Subtask> expectedSubtaskMap = new HashMap<>();
-        HashMap<Integer, Subtask> actualSubtaskMap = manager.getSubtasks();
+        Map<Integer, Subtask> expectedSubtaskMap = new HashMap<>();
+        Map<Integer, Subtask> actualSubtaskMap = manager.getSubtasks();
         
         assertEquals(expected, actual, "Не совпадает");
         assertEquals(expectedSubtaskMap, actualSubtaskMap, "Не совпадает");
@@ -300,9 +300,9 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     void deleteEpicByIdTestWrongId() {
         manager.addItem(epic);
         manager.deleteEpicById(89);
-        HashMap<Integer, Epic> expected = new HashMap<>();
+        Map<Integer, Epic> expected = new HashMap<>();
         expected.put(epic.getId(), epic);
-        HashMap<Integer, Epic> actual = manager.getEpics();
+        Map<Integer, Epic> actual = manager.getEpics();
         assertEquals(expected, actual, "Не совпадает");
     }
 
@@ -313,8 +313,8 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         Subtask subtask = initSubtask();
         manager.addItem(subtask);
         manager.deleteSubtaskById(subtask.getId());
-        HashMap<Integer, Subtask> expected = new HashMap<>();
-        HashMap<Integer, Subtask> actual = manager.getSubtasks();
+        Map<Integer, Subtask> expected = new HashMap<>();
+        Map<Integer, Subtask> actual = manager.getSubtasks();
         assertEquals(expected, actual, "Не совпадает");
     }
 
@@ -324,9 +324,9 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         Subtask subtask = initSubtask();
         manager.addItem(subtask);
         manager.deleteSubtaskById(89);
-        HashMap<Integer, Subtask> expected = new HashMap<>();
+        Map<Integer, Subtask> expected = new HashMap<>();
         expected.put(subtask.getId(), subtask);
-        HashMap<Integer, Subtask> actual = manager.getSubtasks();
+        Map<Integer, Subtask> actual = manager.getSubtasks();
         assertEquals(expected, actual, "Не совпадает");
 
     }
@@ -377,7 +377,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     void checkTaskTimeTest() {
-        manager.addItem(task);
+        manager.addTask(task);
         Task task2 = new Task(0, "task2", "description2", LocalDateTime.of(2022, 10,9, 20, 00),
                 Duration.ofMinutes(15));
         Task task3 = new Task( LocalDateTime.of(2022, 10,10, 20, 00),
@@ -385,21 +385,21 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         Task task4 = new Task( LocalDateTime.of(2022, 10,10, 20, 05),
                 Duration.ofMinutes(15));
 
-        assertDoesNotThrow(() -> manager.addItem(task2));
-        assertThrows(NoTimeException.class, () -> manager.addItem(task3));
-        assertThrows(NoTimeException.class, () -> manager.addItem(task4));
+        assertDoesNotThrow(() -> manager.addTask(task2));
+        assertThrows(NoTimeException.class, () -> manager.addTask(task3));
+        assertThrows(NoTimeException.class, () -> manager.addTask(task4));
 
-        HashMap <Integer, Task> expected = new HashMap<>() {
+        Map <Integer, Task> expected = new HashMap<>() {
             {
                 put(task.getId(), task);
                 put(task2.getId(), task2);
             }
         };
-        HashMap<Integer, Task> actual = manager.getTasks();
+        Map<Integer, Task> actual = manager.getTasks();
 
         assertEquals(expected, actual, "Не совпадает");
 
-    }
+    }*/
 
 
 

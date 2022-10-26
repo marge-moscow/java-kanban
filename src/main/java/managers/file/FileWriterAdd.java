@@ -40,17 +40,17 @@ public class FileWriterAdd {
     public static String checkTime(Task task, String item) {
         String line = "no data";
         switch (item) {
-            case "STARTTIME":
+            case START_TIME:
                 if(task.getStartTime() != null) {
                     line = task.getStartTime().toString();
                 }
                 break;
-            case "DURATION":
+            case DURATION:
                 if(task.getDuration() != null) {
                     line = task.getDuration().toString();
                 }
                 break;
-            case "ENDTIME":
+            case END_TIME:
                 if(task.getEndTime() != null) {
                     line = task.getEndTime().toString();
                 }

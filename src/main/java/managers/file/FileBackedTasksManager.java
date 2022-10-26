@@ -14,6 +14,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class FileBackedTasksManager extends InMemoryTaskManager implements TaskManager {
     protected static List <Integer> history;
@@ -31,7 +32,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
                 "Разобрать все вещи и организовать систему хранения."
         );
 
-        taskManager.addItem(epic1);
+        taskManager.addEpic(epic1);
 
         Task task1 = new Task(
                 0,
@@ -40,10 +41,10 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
                 LocalDateTime.of(2022,10,07,23,00),
                 Duration.ofMinutes(15)
         );
-        taskManager.addItem(task1);
-        taskManager.addItem(task1);
-        taskManager.addItem(task1);
-        taskManager.addItem(task1);
+        taskManager.addTask(task1);
+        taskManager.addTask(task1);
+        taskManager.addTask(task1);
+        taskManager.addTask(task1);
 
         taskManager.updateItem(task1, TaskStatus.DONE);
 
@@ -64,7 +65,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
                 epic1.getId()
        );
 
-       fileBackedTasksManager.addItem(subtask4);
+       fileBackedTasksManager.addSubtask(subtask4);
        fileBackedTasksManager.getSubtaskById(2);
        fileBackedTasksManager.getSubtaskById(6);
 
@@ -73,6 +74,81 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
     }
 
     public void save() {
+        try (Writer fileWriter = new FileWriter("managers.file.csv")) {
+            fileWriter.write("id,type,name,status,description,startTime,duration,endTime,epicId\n");
+            for (Integer id: tasks.keySet()) {
+                fileWriter.write(FileWriterAdd.toString(tasks.get(id)));
+                fileWriter.append("\n");
+            }
+            for (Integer id: epics.keySet()) {
+                fileWriter.write(FileWriterAdd.toString(epics.get(id)));
+                fileWriter.append("\n");
+            }
+            for (Integer id: subtasks.keySet()) {
+                fileWriter.write(FileWriterAdd.toString(subtasks.get(id)));
+                fileWriter.append("\n");
+            }
+
+            fileWriter.append("\n");
+            fileWriter.write(FileWriterAdd.historyToString(historyManager));
+
+
+        } catch (IOException e) {
+            throw new NoTimeException("Ничего не получилось.");
+        }
+    }
+
+    public void saveTask() {
+        try (Writer fileWriter = new FileWriter("managers.file.csv")) {
+            fileWriter.write("id,type,name,status,description,startTime,duration,endTime,epicId\n");
+            for (Integer id: tasks.keySet()) {
+                fileWriter.write(FileWriterAdd.toString(tasks.get(id)));
+                fileWriter.append("\n");
+            }
+            for (Integer id: epics.keySet()) {
+                fileWriter.write(FileWriterAdd.toString(epics.get(id)));
+                fileWriter.append("\n");
+            }
+            for (Integer id: subtasks.keySet()) {
+                fileWriter.write(FileWriterAdd.toString(subtasks.get(id)));
+                fileWriter.append("\n");
+            }
+
+            fileWriter.append("\n");
+            fileWriter.write(FileWriterAdd.historyToString(historyManager));
+
+
+        } catch (IOException e) {
+            throw new NoTimeException("Ничего не получилось.");
+        }
+    }
+
+    public void saveEpic() {
+        try (Writer fileWriter = new FileWriter("managers.file.csv")) {
+            fileWriter.write("id,type,name,status,description,startTime,duration,endTime,epicId\n");
+            for (Integer id: tasks.keySet()) {
+                fileWriter.write(FileWriterAdd.toString(tasks.get(id)));
+                fileWriter.append("\n");
+            }
+            for (Integer id: epics.keySet()) {
+                fileWriter.write(FileWriterAdd.toString(epics.get(id)));
+                fileWriter.append("\n");
+            }
+            for (Integer id: subtasks.keySet()) {
+                fileWriter.write(FileWriterAdd.toString(subtasks.get(id)));
+                fileWriter.append("\n");
+            }
+
+            fileWriter.append("\n");
+            fileWriter.write(FileWriterAdd.historyToString(historyManager));
+
+
+        } catch (IOException e) {
+            throw new NoTimeException("Ничего не получилось.");
+        }
+    }
+
+    public void saveSubtask() {
         try (Writer fileWriter = new FileWriter("managers.file.csv")) {
             fileWriter.write("id,type,name,status,description,startTime,duration,endTime,epicId\n");
             for (Integer id: tasks.keySet()) {
@@ -116,7 +192,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
             if (id > startId) {
                 startId = id;
             }
-            tasksManager.addItem(task);
+            tasksManager.addTask(task);
 
         }
 
@@ -125,22 +201,22 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
     }
 
     @Override
-    public HashMap<Integer, Task> getTasks() {
-        HashMap<Integer, Task> hashMap = super.getTasks();
+    public Map<Integer, Task> getTasks() {
+        Map<Integer, Task> hashMap = super.getTasks();
         save();
         return hashMap;
     }
 
     @Override
-    public HashMap<Integer, Epic> getEpics() {
-        HashMap<Integer, Epic> hashMap = super.getEpics();
+    public Map<Integer, Epic> getEpics() {
+        Map<Integer, Epic> hashMap = super.getEpics();
         save();
         return hashMap;
     }
 
     @Override
-    public HashMap<Integer, Subtask> getSubtasks() {
-        HashMap<Integer, Subtask> hashMap = super.getSubtasks();
+    public Map<Integer, Subtask> getSubtasks() {
+        Map<Integer, Subtask> hashMap = super.getSubtasks();
         save();
         return hashMap;
     }
@@ -184,15 +260,49 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
         return task;
     }
 
-    @Override
+    /*@Override
     public void addItem(Task task) {
         super.addItem(task);
+        save();
+    }*/
+
+    @Override
+    public void addTask(Task task) {
+        super.addTask(task);
+        save();
+    }
+
+    @Override
+    public void addEpic(Epic epic) {
+        super.addEpic(epic);
+        save();
+    }
+
+    @Override
+    public void addSubtask(Subtask subtask) {
+        super.addSubtask(subtask);
         save();
     }
 
     @Override
     public void updateItem(Task task, TaskStatus status) {
         super.updateItem(task, status);
+        save();
+    }
+
+    @Override
+    public void updateTask(Task task) {
+        super.updateTask(task);
+        save();
+    }
+    @Override
+    public void updateEpic(Epic epic) {
+        super.updateEpic(epic);
+        save();
+    }
+    @Override
+    public void updateSubtask(Subtask subtask) {
+        super.updateSubtask(subtask);
         save();
     }
 

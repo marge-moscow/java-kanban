@@ -9,7 +9,7 @@ import java.io.File;
 
 public class FileBackedTasksManagerTest extends TaskManagerTest <FileBackedTasksManager> {
 
-    FileBackedTasksManager manager1;
+/*    FileBackedTasksManager manager1;
     FileBackedTasksManager manager2;
 
 
@@ -26,6 +26,6 @@ public class FileBackedTasksManagerTest extends TaskManagerTest <FileBackedTasks
 
         Assertions.assertEquals(manager1.getTasks(), manager2.getTasks());
 
-    }
+    }*/
 
 }

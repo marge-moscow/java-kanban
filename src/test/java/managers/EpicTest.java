@@ -14,7 +14,7 @@ import java.time.*;
 
 public class EpicTest {
 
-    protected Epic epic;
+/*    protected Epic epic;
     protected Subtask subtask1;
     protected Subtask subtask2;
     protected TaskManager manager;
@@ -128,7 +128,7 @@ public class EpicTest {
         Duration expectedDuration = Duration.ofMinutes(35);
         assertEquals(expectedDuration, epic.getDuration());
 
-    }
+    }*/
 
 
 }
