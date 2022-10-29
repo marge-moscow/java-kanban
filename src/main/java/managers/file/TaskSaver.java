@@ -1,73 +1,52 @@
 package managers.file;
 
-import model.TaskType;
-import managers.history.HistoryManager;
-import model.Subtask;
+import com.google.gson.Gson;
 import model.Task;
+
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
+import java.util.Map;
 
 public class TaskSaver {
 
-    static final String START_TIME = "STARTTIME";
-    static final String DURATION = "DURATION";
-    static final String END_TIME = "ENDTIME";
+    static Gson gson = new Gson();
 
-    public static void createFile() {
-        Path path = Path.of("managers.file.csv");
+    public static void saveMapToJson (Map<Integer, ? extends Task> map, String fileName) {
         try {
-            Files.createFile(path);
+            if (!Files.exists(Path.of(fileName))) {
+                Files.createFile(Path.of(fileName));
+            }
+
+            try (Writer fileWriter = new FileWriter(fileName)) {
+
+                String jsonMap = gson.toJson(map);
+                fileWriter.write(jsonMap);
+            }
+
         } catch (IOException e) {
-            System.out.println("Запись в ранее созданный файл!");
+            throw new RuntimeException("Не получилось записать задачу.");
         }
     }
 
-    public static String toString(Task task){
-        int id = task.getId();
-        String line;
+    public static void saveListToJson (List<Integer> list, String fileName) {
+        try {
+            if (!Files.exists(Path.of(fileName))) {
+                Files.createFile(Path.of(fileName));
+            }
 
-        if (task.getType() == TaskType.SUBTASK) {
-            Subtask subtask = (Subtask) task;
-            line = String.join(",", Integer.toString(id), subtask.getType().toString(), subtask.getName(), subtask.getStatus().toString(), subtask.getDescription(),  checkTime(subtask, START_TIME), checkTime(subtask, DURATION), checkTime(subtask, END_TIME), Integer.toString(subtask.getEpicId()));
-        } else {
-            line = String.join(",", Integer.toString(id), task.getType().toString(), task.getName(), task.getStatus().toString(), task.getDescription(), checkTime(task, START_TIME), checkTime(task, DURATION), checkTime(task, END_TIME));
+            try (Writer fileWriter = new FileWriter(fileName)) {
+
+                String jsonMap = gson.toJson(list);
+                fileWriter.write(jsonMap);
+            }
+
+        } catch (IOException e) {
+            throw new RuntimeException("Не получилось записать задачу.");
         }
-
-        return line;
-    }
-
-    public static String checkTime(Task task, String item) {
-        String line = "no data";
-        switch (item) {
-            case START_TIME:
-                if(task.getStartTime() != null) {
-                    line = task.getStartTime().toString();
-                }
-                break;
-            case DURATION:
-                if(task.getDuration() != null) {
-                    line = task.getDuration().toString();
-                }
-                break;
-            case END_TIME:
-                if(task.getEndTime() != null) {
-                    line = task.getEndTime().toString();
-                }
-                break;
-            default:
-                line = "no data";
-        }
-
-        return line;
-    }
-
-    static String historyToString(HistoryManager manager) {
-        StringBuilder sb = new StringBuilder();
-        for (Task task : manager.getHistory()) {
-            sb.append(task.getId()).append(",");
-        }
-        return sb.toString();
     }
 
 }

@@ -11,10 +11,12 @@ import model.TaskStatus;
 import java.util.*;
 import java.util.stream.Collectors;
 
+
+
 public class InMemoryTaskManager implements TaskManager {
     protected static InMemoryHistoryManager historyManager = new InMemoryHistoryManager();
 
-    protected int startId;
+    protected static int startId;
     public Map<Integer, Task> tasks = new HashMap<>();
     public Map<Integer, Epic> epics = new HashMap<>();
     public Map<Integer, Subtask> subtasks = new HashMap<>();
@@ -115,6 +117,28 @@ public class InMemoryTaskManager implements TaskManager {
 
     // 2.4.Создание. Сам объект должен передаваться в качестве параметра.
 
+    /*public <T extends Task> void addItem(T item, Map<Integer, T > map) {
+
+        if (map.containsValue(item)) {
+            return;
+        }
+
+        int id = generateId();
+
+        if (checkTimeIntersection(item)) {
+            map.put(id, item);
+            if (checkTaskHasStartTime(item)) {
+                prioritizedSet.add(item);
+            } else {
+                taskListNoStartTime.add(item);
+            }
+        } else {
+            throw new NoTimeException("Измените время задачи");
+        }
+
+    }*/
+
+
     @Override
     public void addTask(Task task) {
         if (tasks.containsValue(task)) {
@@ -185,9 +209,13 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     // 2.5. Обновление. Новая версия объекта с верным идентификатором передаётся в виде параметра.
-    
+
     @Override
     public void updateTask(Task task) {
+        if (!tasks.containsKey(task.getId())) {
+            return;
+        }
+
         if (!checkTimeIntersection(task)) {
             prioritizedSet = prioritizedSet
                     .stream()
@@ -411,8 +439,8 @@ public class InMemoryTaskManager implements TaskManager {
         return taskList;
     }
 
-    @Override
     //Специально созданный метод для красивого вывода истории (бед детальной информации)
+    @Override
     public List<String> getHistory() {
         List<String> prettyPrintHistoryList = new ArrayList<>();
         for (Task task : historyManager.getHistory()) {

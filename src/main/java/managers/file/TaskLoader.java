@@ -1,65 +1,65 @@
 package managers.file;
 
-import exceptions.UnreadableFileException;
-import model.TaskType;
-import model.Epic;
-import model.Subtask;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import model.Task;
 
-import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.Reader;
+import java.lang.reflect.Type;
 import java.nio.file.Files;
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
-import java.util.List;
+import java.nio.file.Path;
+import java.util.*;
 
 public class TaskLoader {
-    public static String readFileContentsOrNull(File file) throws IOException {
+
+    static Gson gson = new Gson();
+
+    public static Map<Integer, ? extends Task> loadMap(String fileName) {
         try {
-            return Files.readString(file.toPath());
+            if (!Files.exists(Path.of(fileName))) {
+                return new HashMap<>();
+            }
+
+            try (Reader fileReader = new FileReader(fileName)) {
+                Map<Integer, ? extends Task> map = new HashMap<>();
+                Type type = new TypeToken<Map<Integer, ? extends Task>>(){}.getType();
+                Optional<Map<Integer, ? extends Task>> optionalMap = Optional.ofNullable(gson.fromJson(fileReader, type));
+                if (optionalMap.isPresent()) {
+                    map = optionalMap.get();
+                }
+                return map;
+
+            }
+
         } catch (IOException e) {
-            throw new UnreadableFileException("Невозможно прочитать файл.");
+            throw new RuntimeException("Не получилось записать задачу.");
         }
+
     }
 
-    public static Task fromString(String value){
-        String[] parts = value.split(",");
-        int id = Integer.parseInt(parts[0]);
-        String name = parts[2];
-        String description = parts[4];
-        LocalDateTime startTime;
+    public static List<Integer> loadHistoryList(String fileName) {
         try {
-            startTime = LocalDateTime.parse(parts[5]);
-        } catch (DateTimeParseException e) {
-            startTime = null;
+            if (!Files.exists(Path.of(fileName))) {
+                return new ArrayList<>();
+            }
+
+            try (Reader fileReader = new FileReader(fileName)) {
+                List<Integer> list = new ArrayList<>();
+
+                Type type = new TypeToken<List<Integer>>(){}.getType();
+                Optional<List<Integer>> optionalList = Optional.ofNullable(gson.fromJson(fileReader, type));
+                if (optionalList.isPresent()) {
+                    list = optionalList.get();
+                }
+                return list;
+
+            }
+
+        } catch (IOException e) {
+            throw new RuntimeException("Не получилось записать задачу.");
         }
-        Duration duration = Duration.parse(parts[6]);
-
-
-        Task task;
-
-        if (TaskType.valueOf(parts[1]) == TaskType.SUBTASK) {
-            int epicId = Integer.parseInt(parts[8]);
-            task = new Subtask(id, name, description, startTime, duration, epicId);
-        } else if (TaskType.valueOf(parts[1]) == TaskType.EPIC) {
-            task = new Epic(id, name, description);
-        } else {
-            task = new Task(id, name, description, startTime, duration);
-        }
-
-        return task;
-    }
-
-    public static List<Integer> historyFromString(String value) {
-        String[] parts = value.split(",");
-        List<Integer> history = new ArrayList<>();
-        for (String part: parts) {
-            history.add(Integer.parseInt(part));
-        }
-
-        return history;
     }
 
 }
